@@ -5,20 +5,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Demos History</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="sidebar/sidebar.css">
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 
 <body>
+    <div id="sidebar-placeholder"></div>
 
-    <div class="left-bar">
-        <h2>Left Sidebar</h2>
-        <ul>
-            <li><a href="index.html">Drag and Drop Demo</a></li>
-            <li><a href="demohistory.html">Demo history</a></li>
-            <li><a href="login.html">Account</a></li>
-        </ul>
+    <div class="main-content">
+        <div class="welcome-message">
+            <h1>Demo History</h1>
+        </div>
     </div>
 
+    <script>
+        // Najpierw wczytaj pasek boczny HTML
+        fetch('sidebar/sidebar.html')
+            .then(response => response.text())
+            .then(data => {
+                // Wstaw kod HTML do strony
+                document.getElementById('sidebar-placeholder').innerHTML = data;
+
+                // Następnie wczytaj skrypt z logiką paska bocznego
+                const script = document.createElement('script');
+                script.src = 'sidebar/sidebar.js';
+                document.body.appendChild(script);
+            });
+    </script>
 </body>
 
 </html>
