@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Demos History</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="sidebar/sidebar.css">
-    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="/sidebar/sidebar.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
@@ -21,7 +21,7 @@
 
     <script>
         // Najpierw wczytaj pasek boczny HTML
-        fetch('sidebar/sidebar.html')
+        fetch('/sidebar/sidebar.html')
             .then(response => response.text())
             .then(data => {
                 // Wstaw kod HTML do strony

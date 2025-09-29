@@ -69,7 +69,7 @@ homeBtn.addEventListener('click', () => {
 
 historyBtn.addEventListener('click', () => {
     console.log('History button clicked');
-    window.location.href = 'demohistory.html';
+    window.location.href = '/demohistory';
 });
 
 accountBtn.addEventListener('click', () => {
