@@ -5,6 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Demos History</title>
+    <script>
+        // Załaduj motyw natychmiast, przed CSS
+        (function () {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/sidebar/sidebar.css">
     <link rel="stylesheet" href="/css/style.css">
@@ -19,20 +28,7 @@
         </div>
     </div>
 
-    <script>
-        // Najpierw wczytaj pasek boczny HTML
-        fetch('/sidebar/sidebar.html')
-            .then(response => response.text())
-            .then(data => {
-                // Wstaw kod HTML do strony
-                document.getElementById('sidebar-placeholder').innerHTML = data;
-
-                // Następnie wczytaj skrypt z logiką paska bocznego
-                const script = document.createElement('script');
-                script.src = '/sidebar/sidebar.js';
-                document.body.appendChild(script);
-            });
-    </script>
+    <script src="/sidebar/sidebar-dynamic.js"></script>
 </body>
 
 </html>

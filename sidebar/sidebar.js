@@ -33,22 +33,38 @@ function setActiveMenuItem() {
     }
 }
 
-// Funkcja do ładowania zapisanego motywu
+// Funkcja do włączania animacji (dodaje klasę animations-enabled)
+function enableAnimations() {
+    if (sidebar) {
+        setTimeout(() => {
+            sidebar.classList.add('animations-enabled');
+        }, 300);
+    }
+}
+
+// Funkcja do ładowania zapisanego motywu dla sidebara (bez animacji)
 function loadSavedTheme() {
     const savedTheme = localStorage.getItem('theme');
     const isDark = savedTheme === 'dark';
 
     if (isDark) {
-        sidebar.classList.add('dark');
-        document.body.classList.add('dark');
-        if (toggleTheme) {
-            toggleTheme.checked = true;
-        }
+        if (sidebar) sidebar.classList.add('dark');
+        if (toggleTheme) toggleTheme.checked = true;
     } else {
-        sidebar.classList.remove('dark');
-        document.body.classList.remove('dark');
-        if (toggleTheme) {
-            toggleTheme.checked = false;
+        if (sidebar) sidebar.classList.remove('dark');
+        if (toggleTheme) toggleTheme.checked = false;
+    }
+}
+
+// Funkcja do ładowania zapisanego stanu sidebara (bez animacji)
+function loadSavedSidebarState() {
+    const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+
+    if (isCollapsed && sidebar) {
+        sidebar.classList.add('collapsed');
+        if (collapseIcon) {
+            collapseIcon.classList.remove('fa-angle-double-left');
+            collapseIcon.classList.add('fa-angle-double-right');
         }
     }
 }
@@ -58,11 +74,20 @@ function saveTheme(isDark) {
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
 }
 
+// Funkcja do zapisywania stanu sidebara
+function saveSidebarState(isCollapsed) {
+    localStorage.setItem('sidebarCollapsed', isCollapsed.toString());
+}
+
 // Wywołaj funkcję po załadowaniu sidebara
 setTimeout(() => {
     setActiveMenuItem();
     loadSavedTheme();
-}, 100);
+    loadSavedSidebarState();
+
+    // Przywróć animacje po załadowaniu wszystkich ustawień (z jeszcze dłuższym opóźnieniem)
+    enableAnimations();
+}, 200);
 
 // Sprawdzanie, czy elementy istnieją, przed dodaniem detektora zdarzeń
 if (toggleTheme) {
@@ -71,10 +96,10 @@ if (toggleTheme) {
 
         if (isDark) {
             sidebar.classList.add('dark');
-            document.body.classList.add('dark');
+            document.documentElement.classList.add('dark');
         } else {
             sidebar.classList.remove('dark');
-            document.body.classList.remove('dark');
+            document.documentElement.classList.remove('dark');
         }
 
         // Zapisz wybór użytkownika
@@ -85,13 +110,18 @@ if (toggleTheme) {
 if (collapseBtn) {
     collapseBtn.addEventListener('click', () => {
         sidebar.classList.toggle('collapsed');
-        if (sidebar.classList.contains('collapsed')) {
+        const isCollapsed = sidebar.classList.contains('collapsed');
+
+        if (isCollapsed) {
             collapseIcon.classList.remove('fa-angle-double-left');
             collapseIcon.classList.add('fa-angle-double-right');
         } else {
             collapseIcon.classList.remove('fa-angle-double-right');
             collapseIcon.classList.add('fa-angle-double-left');
         }
+
+        // Zapisz stan sidebara
+        saveSidebarState(isCollapsed);
     });
 }
 
