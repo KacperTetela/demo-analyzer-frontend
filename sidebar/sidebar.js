@@ -64,20 +64,20 @@ if (collapseBtn) {
 
 homeBtn.addEventListener('click', () => {
     console.log('Home button clicked');
-    window.location.href = '../index/';
+    window.location.href = 'index.html';
 });
 
 historyBtn.addEventListener('click', () => {
     console.log('History button clicked');
-    window.location.href = '../demohistory/';
+    window.location.href = 'demohistory.html';
 });
 
 accountBtn.addEventListener('click', () => {
     console.log('Account button clicked');
-    window.location.href = '../account/';
+    window.location.href = 'account.html';
 });
 
 loginBtn.addEventListener('click', () => {
     console.log('Login button clicked');
-    window.location.href = '../login/';
+    window.location.href = 'login.html';
 });
