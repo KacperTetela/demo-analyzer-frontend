@@ -127,7 +127,7 @@ if (collapseBtn) {
 
 homeBtn.addEventListener('click', () => {
     console.log('Home button clicked');
-    window.location.href = '/';
+    window.location.href = '/senddemo';
 });
 
 historyBtn.addEventListener('click', () => {

@@ -1,32 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drag and drop Your Demo</title>
-    <script>
-            // Załaduj tylko motyw natychmiast, przed CSS (sidebar-dynamic.js obsłuży resztę)
-            if (localStorage.getItem('theme') === 'dark') {
-                document.documentElement.classList.add('dark');
-            }
-    </script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="sidebar/sidebar.css">
-    <link rel="stylesheet" href="./css/style.css">
+    <title>index</title>
 </head>
-
 <body>
-    <div id="sidebar-placeholder"></div>
-    
-    <div class="main-content">
-        <div class="welcome-message">
-            <h1>Home Page</h1>
-            <p>Drag and drop your demo files here</p>
-        </div>
-    </div>
-
-    <script src="sidebar/sidebar-dynamic.js"></script>
+        <p>Jeśli nie zostaniesz automatycznie przekierowany, <a href="/senddemo/">kliknij tutaj</a>.</p>
+        <script>
+            // Ta linia przekieruje na nową stronę natychmiast po załadowaniu
+            window.location.href = '/senddemo/';
+        </script>
 </body>
-
 </html>

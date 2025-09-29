@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Demos History</title>
+    <title>Drag and drop Your Demo</title>
     <script>
-            // Załaduj tylko motyw natychmiast, przed CSS
-            if (localStorage.getItem('theme') === 'dark') {
-                document.documentElement.classList.add('dark');
-            }
+        // Załaduj tylko motyw natychmiast, przed CSS (sidebar-dynamic.js obsłuży resztę)
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+        }
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/sidebar/sidebar.css">
@@ -21,7 +21,8 @@
 
     <div class="main-content">
         <div class="welcome-message">
-            <h1>Demo History</h1>
+            <h1>Home Page</h1>
+            <p>Drag and drop your demo files here</p>
         </div>
     </div>
 
