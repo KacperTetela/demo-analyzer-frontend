@@ -7,6 +7,40 @@ const historyBtn = document.getElementById('history-btn');
 const accountBtn = document.getElementById('account-btn');
 const loginBtn = document.getElementById('login-btn');
 
+// Funkcja wykrywająca aktualną stronę i ustawiająca aktywny element menu
+function setActiveMenuItem() {
+    // Pobierz nazwę aktualnego pliku z URL
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+
+    // Usuń klasę active ze wszystkich elementów menu (z głównego menu i z bottom)
+    document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.remove('active');
+    });
+
+    // Ustaw klasę active na odpowiednim elemencie w zależności od strony
+    switch (currentPage) {
+        case 'index.html':
+        case '':
+            if (homeBtn) homeBtn.classList.add('active');
+            break;
+        case 'demohistory.html':
+            if (historyBtn) historyBtn.classList.add('active');
+            break;
+        case 'account.html':
+            if (accountBtn) accountBtn.classList.add('active');
+            break;
+        case 'login.html':
+            if (loginBtn) loginBtn.classList.add('active');
+            break;
+        default:
+            // Jeśli nie rozpoznano strony, podświetl Home jako domyślną
+            if (homeBtn) homeBtn.classList.add('active');
+    }
+}
+
+// Wywołaj funkcję po załadowaniu sidebara
+setTimeout(setActiveMenuItem, 100);
+
 // Sprawdzanie, czy elementy istnieją, przed dodaniem detektora zdarzeń
 if (toggleTheme) {
     toggleTheme.addEventListener('change', () => {
