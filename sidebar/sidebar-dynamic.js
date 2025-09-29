@@ -5,7 +5,7 @@ const SIDEBAR_CONFIG = {
     widths: { collapsed: '80px', expanded: '250px' },
     icons: { collapse: 'fa-angle-double-left', expand: 'fa-angle-double-right' },
     pages: {
-        home: { icon: 'fa-home', text: 'Prześlij demo', url: '/', mainMenu: true },
+        home: { icon: 'fa-home', text: 'Prześlij demo', url: '/senddemo', mainMenu: true },
         history: { icon: 'fa-chart-bar', text: 'Historia gier', url: '/demohistory', mainMenu: true },
         login: { icon: 'fa-sign-in-alt', text: 'Zaloguj się', url: '/login', mainMenu: false },
         account: { icon: 'fa-user', text: 'Konto', url: '/account', mainMenu: false }
@@ -21,8 +21,7 @@ const getSavedSettings = () => ({
 const getCurrentPage = () => {
     const path = window.location.pathname;
     const pageMap = {
-        '/': 'home',
-        '/index': 'home',
+        '/senddemo': 'home',
         '/demohistory': 'history',
         '/account': 'account',
         '/login': 'login'
@@ -32,7 +31,7 @@ const getCurrentPage = () => {
     if (pageMap[path]) return pageMap[path];
 
     // Sprawdź częściowe dopasowania
-    if (path.includes('index.html')) return 'home';
+    if (path.includes('senddemo')) return 'home';
     if (path.includes('demohistory')) return 'history';
     if (path.includes('account')) return 'account';
     if (path.includes('login')) return 'login';
