@@ -33,7 +33,6 @@ html.dark .main-content {
     background: var(--bg-light);
     color: var(--text-light);
     transition: none;
-        /* Domyślnie wyłączone animacje */
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     display: flex;
