@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/sidebar/sidebar.css">
     <link rel="stylesheet" href="/shared/style.css">
+    <link rel="stylesheet" href="/senddemo/style.css">
 </head>
 
 <body>
@@ -21,18 +22,29 @@
 
     <div class="main-content">
         <div class="welcome-message">
-            <h1>Home Page</h1>
-            <p>Drag and drop your demo files here</p>
+            <h1>Prześlij Demo</h1>
+            <p>Przesyłaj pliki .dem do analizy</p>
         </div>
+        <!-- Demo Upload Component -->
         <div class="drop-area">
-            <p>Drag & Drop your demo files here</p>
-            <p>or</p>
-            <button id="fileSelectBtn">Select Files</button>
-            <input type="file" id="fileInput" multiple style="display: none;">
+            <div class="drop-content">
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                <div class="drop-text">Przeciągnij i upuść pliki .dem tutaj</div>
+                <div class="drop-or">lub</div>
+                <button class="select-btn" id="fileSelectBtn">
+                    <i class="fas fa-folder-open"></i>
+                    Wybierz pliki
+                </button>
+                <div class="file-info">Akceptowane pliki: .dem (maks. 50MB każdy)</div>
+            </div>
         </div>
+        
+        <!-- Hidden file input -->
+        <input type="file" id="fileInput" multiple accept=".dem" style="display: none;">
     </div>
 
     <script src="/sidebar/sidebar-dynamic.js"></script>
+    <script src="/senddemo/upload.js"></script>
 </body>
 
 </html>
