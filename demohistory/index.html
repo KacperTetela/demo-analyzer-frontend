@@ -14,18 +14,71 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/sidebar/sidebar.css">
     <link rel="stylesheet" href="/shared/style.css">
+    <link rel="stylesheet" href="/demohistory/style.css">
 </head>
 
 <body>
     <div id="sidebar-placeholder"></div>
 
     <div class="main-content">
-        <div class="welcome-message">
-            <h1>Demo History</h1>
+        <div class="demo-history-container">
+            <h1>Historia Demo</h1>
+            <p class="subtitle">Twoje przeanalizowane powtórki meczów CS2</p>
+        
+            <!-- Filter and Search -->
+            <div class="filters-section">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Szukaj demo po nazwie mapy, dacie lub przeciwniku...">
+                </div>
+                <div class="filter-options">
+                    <select id="mapFilter" class="filter-select">
+                        <option value="">Wszystkie mapy</option>
+                        <option value="dust2">Dust2</option>
+                        <option value="mirage">Mirage</option>
+                        <option value="inferno">Inferno</option>
+                        <option value="cache">Cache</option>
+                        <option value="overpass">Overpass</option>
+                    </select>
+                    <select id="resultFilter" class="filter-select">
+                        <option value="">Wszystkie wyniki</option>
+                        <option value="win">Wygrane</option>
+                        <option value="loss">Przegrane</option>
+                        <option value="tie">Remisy</option>
+                    </select>
+                    <button id="refreshBtn" class="refresh-btn">
+                        <i class="fas fa-sync-alt"></i>
+                        Odśwież
+                    </button>
+                </div>
+            </div>
+        
+            <!-- Demo List -->
+            <div class="demo-list" id="demoList">
+                <!-- Demo items will be populated by JavaScript -->
+            </div>
+        
+            <!-- Loading State -->
+            <div class="loading-state" id="loadingState" style="display: none;">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Ładowanie demo...</p>
+            </div>
+        
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <i class="fas fa-folder-open"></i>
+                <h3>Brak demo</h3>
+                <p>Nie znaleziono żadnych demo spełniających kryteria wyszukiwania.</p>
+                <a href="/senddemo" class="upload-link">
+                    <i class="fas fa-upload"></i>
+                    Prześlij nowe demo
+                </a>
+            </div>
         </div>
     </div>
 
     <script src="/sidebar/sidebar-dynamic.js"></script>
+    <script src="/demohistory/script.js"></script>
 </body>
 
 </html>
