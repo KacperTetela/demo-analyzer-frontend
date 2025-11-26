@@ -15,18 +15,18 @@
             <form>
                 <h1>Create Account</h1>
                 <input type="text" placeholder="Name">
-                <input type="email" placeholder="Email">
-                <input type="password" placeholder="Password">
-                <button>Sign Up</button>
+                <input id="email-register" type="email" placeholder="Email">
+                <input id="password-register" type="password" placeholder="Password">
+                <button id="register-confirm">Sign Up</button>
             </form>
         </div>
         <div class="form-container sign-in">
             <form>
                 <h1>Sign In</h1>
-                <input type="email" placeholder="Email">
-                <input type="password" placeholder="Password">
+                <input id="email-login" type="email" placeholder="Email">
+                <input id="password-login" type="password" placeholder="Password">
                 <a href="#">Forget Your Password?</a>
-                <button>Sign In</button>
+                <button id="login-confirm">Sign In</button>
             </form>
         </div>
         <div class="toggle-container">
@@ -46,6 +46,8 @@
     </div>
 
     <script src="/login/login.js"></script>
+    <script src="/auth/auth.js"></script>
+    <script src="/auth/api.js"></script>
 </body>
 
 </html>
