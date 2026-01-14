@@ -1,58 +1,37 @@
-/* Account Page Styles */
-
-/* Layout styles for account page */
-body {
-    background-color: #c9d6ff;
-    background: linear-gradient(to right, #e2e2e2, #c9d6ff);
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-}
-
-.main-content {
-    margin-left: 280px;
-    padding: 20px;
-    transition: margin-left 0.3s ease;
-    min-height: 100vh;
-}
-
-.sidebar.collapsed+.main-content {
-    margin-left: 80px;
-}
-
-.account-container {
+.accountContainer {
     max-width: 800px;
     margin: 0 auto;
 }
 
-.account-container h1 {
-    color: #333;
+.accountContainer h1 {
+    color: var(--text-light);
+    /* use generic var */
     font-size: 2.5rem;
     margin-bottom: 30px;
     text-align: center;
     font-weight: 600;
 }
 
-/* Account Layout */
-.account-layout {
+.accountLayout {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 30px;
     align-items: start;
 }
 
-.account-info-section {
+.accountInfoSection {
     justify-self: end;
     max-width: 500px;
+    width: 100%;
 }
 
-.password-section {
+.passwordSection {
     justify-self: start;
     max-width: 500px;
+    width: 100%;
 }
 
-/* Account Sections */
-.account-section {
+.accountSection {
     background: white;
     border-radius: 12px;
     padding: 30px;
@@ -62,13 +41,13 @@ body {
     width: 100%;
 }
 
-.account-section:hover {
+.accountSection:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
-.account-section h2 {
-    color: #512da8;
+.accountSection h2 {
+    color: var(--primary);
     font-size: 1.5rem;
     margin-bottom: 20px;
     display: flex;
@@ -78,13 +57,13 @@ body {
 }
 
 /* Account Information */
-.account-info {
+.accountInfo {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-.info-card {
+.infoCard {
     display: flex;
     align-items: center;
     padding: 20px;
@@ -95,13 +74,13 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.info-card:hover {
+.infoCard:hover {
     transform: translateY(-3px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-color: #512da8;
+    border-color: var(--primary);
 }
 
-.info-icon {
+.infoIcon {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -113,16 +92,16 @@ body {
     flex-shrink: 0;
 }
 
-.info-icon i {
+.infoIcon i {
     color: white;
     font-size: 1.2rem;
 }
 
-.info-content {
+.infoContent {
     flex: 1;
 }
 
-.info-label {
+.infoLabel {
     font-size: 0.85rem;
     color: #666;
     font-weight: 500;
@@ -131,42 +110,42 @@ body {
     letter-spacing: 0.5px;
 }
 
-.info-value {
+.infoValue {
     font-size: 1.1rem;
     color: #333;
     font-weight: 600;
 }
 
-.status-active {
+.statusActive {
     color: #4caf50;
 }
 
 /* Password Form */
-.password-form {
+.passwordForm {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-.form-group {
+.formGroup {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.form-group label {
+.formGroup label {
     font-weight: 600;
     color: #333;
     font-size: 1rem;
 }
 
-.password-input {
+.passwordInput {
     position: relative;
     display: flex;
     align-items: center;
 }
 
-.password-input input {
+.passwordInput input {
     width: 100%;
     padding: 12px 45px 12px 15px;
     border: 2px solid #ddd;
@@ -175,13 +154,13 @@ body {
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.password-input input:focus {
+.passwordInput input:focus {
     outline: none;
-    border-color: #512da8;
+    border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(81, 45, 168, 0.1);
 }
 
-.toggle-password {
+.togglePassword {
     position: absolute;
     right: 12px;
     background: none;
@@ -193,21 +172,30 @@ body {
     transition: color 0.3s ease;
 }
 
-.toggle-password:hover {
-    color: #512da8;
+.togglePassword:hover {
+    color: var(--primary);
 }
 
-.password-requirements {
+.passwordRequirements {
     margin-top: 5px;
 }
 
-.password-requirements small {
+.passwordRequirements small {
     color: #666;
     font-size: 0.85rem;
 }
 
-.change-password-btn {
-    background: #512da8;
+/* Helper classes for status text handled in JS */
+.validReq {
+    color: #4caf50 !important;
+}
+
+.invalidReq {
+    color: #f44336 !important;
+}
+
+.changePasswordBtn {
+    background: var(--primary);
     color: white;
     border: none;
     padding: 15px 30px;
@@ -224,14 +212,16 @@ body {
     align-self: flex-start;
 }
 
-.change-password-btn:hover {
-    background: #3f1f87;
+.changePasswordBtn:hover {
+    background: var(--primary-hover);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(81, 45, 168, 0.3);
 }
 
-.change-password-btn:active {
-    transform: translateY(0);
+.changePasswordBtn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
 }
 
 /* Success/Error Messages */
@@ -257,175 +247,100 @@ body {
     border: 1px solid #f44336;
 }
 
-/* Dark Theme */
-html.dark body {
-    background: linear-gradient(to right, #1a1a1a, #2d2d2d);
-}
+/* Dark Theme overrides via global specificity */
+/* :global(.dark) target */
 
-html.dark .account-container h1 {
+:global(.dark) .accountContainer h1 {
     color: #fff;
 }
 
-html.dark .account-section {
+:global(.dark) .accountSection {
     background: #2d2d2d;
     color: #fff;
 }
 
-html.dark .account-section h2 {
+:global(.dark) .accountSection h2 {
     color: #bb86fc;
 }
 
-html.dark .info-item {
+:global(.dark) .infoCard {
     background: #3d3d3d;
-    border-left-color: #bb86fc;
+    border-color: #555;
 }
 
-html.dark .info-item label {
-    color: #fff;
+:global(.dark) .infoCard:hover {
+    border-color: #bb86fc;
 }
 
-html.dark .info-item span {
+:global(.dark) .infoIcon {
+    background: linear-gradient(135deg, #bb86fc, #9c64e8);
+}
+
+:global(.dark) .infoLabel {
     color: #ccc;
 }
 
-html.dark .form-group label {
+:global(.dark) .infoValue {
     color: #fff;
 }
 
-html.dark .password-input input {
+:global(.dark) .formGroup label {
+    color: #fff;
+}
+
+:global(.dark) .passwordInput input {
     background: #3d3d3d;
     border-color: #555;
     color: #fff;
 }
 
-html.dark .password-input input:focus {
+:global(.dark) .passwordInput input:focus {
     border-color: #bb86fc;
-    box-shadow: 0 0 0 3px rgba(187, 134, 252, 0.1);
 }
 
-html.dark .toggle-password {
+:global(.dark) .togglePassword {
     color: #ccc;
 }
 
-html.dark .toggle-password:hover {
+:global(.dark) .togglePassword:hover {
     color: #bb86fc;
 }
 
-html.dark .password-requirements small {
+:global(.dark) .passwordRequirements small {
     color: #ccc;
 }
 
-html.dark .change-password-btn {
+:global(.dark) .changePasswordBtn {
     background: #bb86fc;
     color: #000;
 }
 
-html.dark .change-password-btn:hover {
+:global(.dark) .changePasswordBtn:hover {
     background: #9c64e8;
 }
 
-html.dark .message.success {
-    background: #1b5e20;
-    color: #4caf50;
-    border-color: #2e7d32;
-}
-
-html.dark .message.error {
-    background: #b71c1c;
-    color: #f44336;
-    border-color: #c62828;
-}
-
-/* Dark theme for new components */
-html.dark .info-card {
-    background: #3d3d3d;
-    border-color: #555;
-}
-
-html.dark .info-card:hover {
-    border-color: #bb86fc;
-}
-
-html.dark .info-icon {
-    background: linear-gradient(135deg, #bb86fc, #9c64e8);
-}
-
-html.dark .info-label {
-    color: #ccc;
-}
-
-html.dark .info-value {
-    color: #fff;
-}
-
-/* Responsive Design */
+/* Responsive */
 @media (max-width: 768px) {
-    .main-content {
-        margin-left: 0;
-        padding: 10px;
-    }
-
-    .sidebar.collapsed+.main-content {
-        margin-left: 0;
-    }
-
-    .account-container {
+    .accountContainer {
         max-width: 100%;
     }
 
-    .account-container h1 {
-        font-size: 2rem;
-    }
-
-    .account-layout {
+    .accountLayout {
         grid-template-columns: 1fr;
         gap: 20px;
     }
 
-    .account-info-section,
-    .password-section {
+    .accountInfoSection,
+    .passwordSection {
         justify-self: center;
         max-width: 100%;
     }
 
-    .account-section {
+    .accountSection {
         padding: 20px;
     }
 
-    .account-info {
-        gap: 15px;
-    }
-
-    .info-card {
-        padding: 15px;
-    }
-
-    .info-icon {
-        width: 45px;
-        height: 45px;
-        margin-right: 12px;
-    }
-
-    .info-icon i {
-        font-size: 1rem;
-    }
-
-    .password-input input {
-        padding: 10px 40px 10px 12px;
-    }
-
-    .change-password-btn {
+    .changePasswordBtn {
         width: 100%;
-    }
-}
-
-@media (max-width: 480px) {
-    .account-section {
-        padding: 15px;
-        margin-bottom: 15px;
-    }
-
-    .account-section h2 {
-        font-size: 1.3rem;
     }
 }
