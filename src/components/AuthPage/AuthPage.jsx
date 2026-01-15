@@ -26,7 +26,6 @@ const AuthPage = () => {
             });
 
             saveTokens(res.accessToken, res.refreshToken);
-            saveTokens(res.accessToken, res.refreshToken);
             navigate('/senddemo');
         } catch (error) {
             alert("Rejestracja nieudana: " + error.message);
@@ -42,7 +41,6 @@ const AuthPage = () => {
             });
 
             saveTokens(res.accessToken, res.refreshToken);
-            saveTokens(res.accessToken, res.refreshToken);
             navigate('/senddemo');
         } catch (error) {
             alert("Logowanie nieudane: " + error.message);
@@ -55,7 +53,7 @@ const AuthPage = () => {
                 <form onSubmit={handleRegister}>
                     <h1>Create Account</h1>
                     <div className={styles.socialIcons}>
-                        { }
+
                     </div>
                     <span>or use your email for registration</span>
                     <input
@@ -83,7 +81,7 @@ const AuthPage = () => {
                 <form onSubmit={handleLogin}>
                     <h1>Sign In</h1>
                     <div className={styles.socialIcons}>
-                        {/}
+
                     </div>
                     <span>or use your email password</span>
                     <input

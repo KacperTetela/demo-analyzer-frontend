@@ -36,7 +36,6 @@ const SendDemo = () => {
     const handleFiles = (files) => {
         const newFiles = Array.from(files).filter(file => {
             if (file.name.toLowerCase().endsWith('.dem')) {
-                // Check for duplicates
                 if (uploadedFiles.some(f => f.name === file.name && f.size === file.size)) {
                     alert(`Plik "${file.name}" już został dodany`);
                     return false;
@@ -50,36 +49,73 @@ const SendDemo = () => {
             file,
             name: file.name,
             size: formatFileSize(file.size),
-            id: Date.now() + Math.random()
+            id: Date.now() + Math.random(),
+            uploadStatus: 'idle', // idle, uploading, processing, completed, error
+            statusMessage: ''
         }));
 
         setUploadedFiles(prev => [...prev, ...newFiles]);
     };
 
-    const removeFile = (id) => {
-        setUploadedFiles(prev => prev.filter(f => f.id !== id));
+    const updateFileStatus = (id, status, message = '') => {
+        setUploadedFiles(prev => prev.map(f =>
+            f.id === id ? { ...f, uploadStatus: status, statusMessage: message } : f
+        ));
+    };
+
+    const pollStatus = async (demId, fileId) => {
+        const pollInterval = setInterval(async () => {
+            try {
+                const statusRes = await request(`/api/dem/${demId}/status`, { method: 'GET' });
+                // Assuming statusRes contains { status: "COMPLETED" | "processing" | "error" }
+                if (statusRes.status === 'COMPLETED') {
+                    clearInterval(pollInterval);
+                    updateFileStatus(fileId, 'completed', 'Analiza zakończona!');
+                } else if (statusRes.status === 'ERROR') {
+                    clearInterval(pollInterval);
+                    updateFileStatus(fileId, 'error', 'Błąd analizy');
+                } else {
+                    updateFileStatus(fileId, 'processing', `Przetwarzanie... (${statusRes.status})`);
+                }
+            } catch (err) {
+                console.error("Polling error", err);
+                clearInterval(pollInterval);
+                updateFileStatus(fileId, 'error', 'Błąd sprawdzania statusu');
+            }
+        }, 2000); // Check every 2 seconds
     };
 
     const handleUpload = async () => {
-        if (uploadedFiles.length === 0) {
-            alert('Wybierz pliki do przesłania.');
+        const filesToUpload = uploadedFiles.filter(f => f.uploadStatus === 'idle' || f.uploadStatus === 'error');
+
+        if (filesToUpload.length === 0) {
+            alert('Brak nowych plików do przesłania.');
             return;
         }
 
-        for (const fileObj of uploadedFiles) {
+        for (const fileObj of filesToUpload) {
+            updateFileStatus(fileObj.id, 'uploading', 'Wysyłanie...');
             const formData = new FormData();
             formData.append('file', fileObj.file);
 
             try {
-                await request('/api/dem/upload', {
+                // Returns DemStatusResponse, assuming it has { demId: 123, status: ... }
+                const response = await request('/api/dem/upload', {
                     method: 'POST',
                     body: formData
                 });
-                alert(`Plik ${fileObj.name} przesłany pomyślnie!`);
-                removeFile(fileObj.id);
+
+                updateFileStatus(fileObj.id, 'processing', 'Przesłano. Oczekiwanie na analizę...');
+
+                if (response && response.demId) {
+                    pollStatus(response.demId, fileObj.id);
+                } else {
+                    updateFileStatus(fileObj.id, 'error', 'Nie otrzymano ID demka');
+                }
+
             } catch (error) {
                 console.error(error);
-                alert(`Błąd przesyłania ${fileObj.name}: ${error.message}`);
+                updateFileStatus(fileObj.id, 'error', `Błąd wysyłania: ${error.message}`);
             }
         }
     };
@@ -144,12 +180,23 @@ const SendDemo = () => {
                                         <div className={styles.fileDetails}>
                                             <span className={styles.fileName}>{file.name}</span>
                                             <span className={styles.fileSize}>{file.size}</span>
+                                            {file.statusMessage && (
+                                                <span className={`${styles.statusMessage} ${styles[file.uploadStatus]}`}>
+                                                    {file.statusMessage}
+                                                </span>
+                                            )}
                                         </div>
                                     </div>
                                     <div className={styles.fileActions}>
-                                        <button className={styles.removeBtn} onClick={() => removeFile(file.id)} type="button">
-                                            <i className="fas fa-times"></i>
-                                        </button>
+                                        {file.uploadStatus === 'processing' || file.uploadStatus === 'uploading' ? (
+                                            <i className="fas fa-spinner fa-spin"></i>
+                                        ) : file.uploadStatus === 'completed' ? (
+                                            <i className="fas fa-check-circle" style={{ color: 'green' }}></i>
+                                        ) : (
+                                                    <button className={styles.removeBtn} onClick={() => removeFile(file.id)} type="button">
+                                                        <i className="fas fa-times"></i>
+                                                    </button>
+                                        )}
                                     </div>
                                 </div>
                             ))}

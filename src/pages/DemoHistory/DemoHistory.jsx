@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './DemoHistory.module.css';
+import { request } from '../../utils/api';
 
 const DemoHistory = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -13,105 +14,44 @@ const DemoHistory = () => {
         loadDemoData();
     }, []);
 
+
+
     const loadDemoData = async () => {
         setLoading(true);
-        // Simulate API call
-        setTimeout(() => {
-            const mockData = [
-                {
-                    id: 1,
-                    filename: "match_dust2_2024_10_15.dem",
-                    map: "dust2",
-                    mapDisplayName: "Dust2",
-                    date: "2024-10-15",
-                    dateDisplay: "15 października 2024",
-                    score: "16:12",
-                    result: "win",
-                    resultDisplay: "Wygrana",
-                    kills: 24,
-                    deaths: 18,
-                    assists: 7,
-                    kd: 1.33,
-                    adr: 78.5,
-                    duration: "32:45",
-                    opponent: "Team Alpha"
-                },
-                {
-                    id: 2,
-                    filename: "match_mirage_2024_10_14.dem",
-                    map: "mirage",
-                    mapDisplayName: "Mirage",
-                    date: "2024-10-14",
-                    dateDisplay: "14 października 2024",
-                    score: "14:16",
-                    result: "loss",
-                    resultDisplay: "Porażka",
-                    kills: 19,
-                    deaths: 21,
-                    assists: 5,
-                    kd: 0.90,
-                    adr: 65.2,
-                    duration: "38:12",
-                    opponent: "Team Beta"
-                },
-                {
-                    id: 3,
-                    filename: "match_inferno_2024_10_13.dem",
-                    map: "inferno",
-                    mapDisplayName: "Inferno",
-                    date: "2024-10-13",
-                    dateDisplay: "13 października 2024",
-                    score: "15:15",
-                    result: "tie",
-                    resultDisplay: "Remis",
-                    kills: 22,
-                    deaths: 20,
-                    assists: 8,
-                    kd: 1.10,
-                    adr: 72.1,
-                    duration: "41:33",
-                    opponent: "Team Gamma"
-                },
-                {
-                    id: 4,
-                    filename: "match_cache_2024_10_12.dem",
-                    map: "cache",
-                    mapDisplayName: "Cache",
-                    date: "2024-10-12",
-                    dateDisplay: "12 października 2024",
-                    score: "16:8",
-                    result: "win",
-                    resultDisplay: "Wygrana",
-                    kills: 28,
-                    deaths: 15,
-                    assists: 4,
-                    kd: 1.87,
-                    adr: 89.3,
-                    duration: "28:21",
-                    opponent: "Team Delta"
-                },
-                {
-                    id: 5,
-                    filename: "match_overpass_2024_10_11.dem",
-                    map: "overpass",
-                    mapDisplayName: "Overpass",
-                    date: "2024-10-11",
-                    dateDisplay: "11 października 2024",
-                    score: "10:16",
-                    result: "loss",
-                    resultDisplay: "Porażka",
-                    kills: 16,
-                    deaths: 23,
-                    assists: 6,
-                    kd: 0.70,
-                    adr: 58.7,
-                    duration: "35:44",
-                    opponent: "Team Echo"
-                }
-            ];
-            setDemos(mockData);
+        try {
+            // Fetch list of demos. Endpoint assumed to be /api/dem/history based on context.
+            // If this fails, we might need to adjust the endpoint.
+            const response = await request('/api/dem/history', { method: 'GET' });
+
+            // Map backend data to UI format
+            // Backend: { demId, mapName, createdAt, status, ... }
+            const mappedData = (Array.isArray(response) ? response : []).map(d => ({
+                id: d.demId,
+                filename: `demo_${d.demId}.dem`, // Backend doesn't seem to verify filename in list?
+                map: d.mapName ? d.mapName.replace('de_', '') : 'unknown',
+                mapDisplayName: d.mapName || 'Unknown',
+                date: d.createdAt,
+                dateDisplay: new Date(d.createdAt).toLocaleDateString(),
+                score: d.teamA && d.teamB ? `${d.teamA.score}:${d.teamB.score}` : 'N/A',
+                result: 'unknown', // Logic to determine result requires knowing user's team
+                resultDisplay: d.status,
+                kills: d.statsRating ? d.statsRating[0]?.kills : 0, // Heuristic mapping
+                deaths: d.statsRating ? d.statsRating[0]?.deaths : 0,
+                assists: d.statsRating ? d.statsRating[0]?.assists : 0,
+                kd: d.statsRating ? d.statsRating[0]?.kdRatio?.toFixed(2) : '0.00',
+                adr: d.statsAdr ? d.statsAdr[0]?.adr?.toFixed(1) : '0.0',
+                duration: d.finishedAt ? 'Completed' : 'Processing', // Duration not explicitly in simple mock
+                opponent: d.teamB ? d.teamB.name : 'Opponent'
+            }));
+
+            // Filter out those that are strictly not processed if necessary, or show them with status
+            setDemos(mappedData);
+        } catch (error) {
+            console.error("Failed to load demo history", error);
+            // Optional: set error state
+        } finally {
             setLoading(false);
-        }, 1000);
+        }
     };
 
     const handleRefresh = () => {
