@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './AuthPage.module.css';
 import { apiPost, saveTokens } from '../../utils/api';
 
 const AuthPage = () => {
     const [isSignUpActive, setIsSignUpActive] = useState(false);
+    const navigate = useNavigate();
 
     // Register State
     const [registerName, setRegisterName] = useState('');
@@ -17,16 +19,15 @@ const AuthPage = () => {
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-            // Note: The original generic form used 'Name' input but the API request in JS mainly sent email/password.
-            // I'm including name in the payload in case the backend supports it, if not it will just be ignored or can be removed.
-            const res = await apiPost("http://localhost:8080/api/auth/register", {
+            const res = await apiPost("/api/auth/register", {
                 email: registerEmail,
                 password: registerPassword,
                 name: registerName
             });
 
             saveTokens(res.accessToken, res.refreshToken);
-            window.location.href = '/index.html'; // Or use React Router navigation if available
+            saveTokens(res.accessToken, res.refreshToken);
+            navigate('/senddemo');
         } catch (error) {
             alert("Rejestracja nieudana: " + error.message);
         }
@@ -35,13 +36,14 @@ const AuthPage = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await apiPost("http://localhost:8080/api/auth/login", {
+            const res = await apiPost("/api/auth/login", {
                 email: loginEmail,
                 password: loginPassword
             });
 
             saveTokens(res.accessToken, res.refreshToken);
-            window.location.href = '/index.html'; // Or use React Router navigation
+            saveTokens(res.accessToken, res.refreshToken);
+            navigate('/senddemo');
         } catch (error) {
             alert("Logowanie nieudane: " + error.message);
         }
@@ -53,7 +55,7 @@ const AuthPage = () => {
                 <form onSubmit={handleRegister}>
                     <h1>Create Account</h1>
                     <div className={styles.socialIcons}>
-                        {/* Social icons can be added here if needed */}
+                        { }
                     </div>
                     <span>or use your email for registration</span>
                     <input
@@ -81,7 +83,7 @@ const AuthPage = () => {
                 <form onSubmit={handleLogin}>
                     <h1>Sign In</h1>
                     <div className={styles.socialIcons}>
-                        {/* Social icons */}
+                        {/}
                     </div>
                     <span>or use your email password</span>
                     <input

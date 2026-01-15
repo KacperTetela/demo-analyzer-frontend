@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import styles from './SendDemo.module.css';
+import { request } from '../../utils/api';
 
 const SendDemo = () => {
     const [dragActive, setDragActive] = useState(false);
@@ -57,6 +58,30 @@ const SendDemo = () => {
 
     const removeFile = (id) => {
         setUploadedFiles(prev => prev.filter(f => f.id !== id));
+    };
+
+    const handleUpload = async () => {
+        if (uploadedFiles.length === 0) {
+            alert('Wybierz pliki do przesłania.');
+            return;
+        }
+
+        for (const fileObj of uploadedFiles) {
+            const formData = new FormData();
+            formData.append('file', fileObj.file);
+
+            try {
+                await request('/api/dem/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                alert(`Plik ${fileObj.name} przesłany pomyślnie!`);
+                removeFile(fileObj.id);
+            } catch (error) {
+                console.error(error);
+                alert(`Błąd przesyłania ${fileObj.name}: ${error.message}`);
+            }
+        }
     };
 
     const clearAll = () => {
@@ -130,7 +155,7 @@ const SendDemo = () => {
                             ))}
                         </div>
                         <div className={styles.uploadActions}>
-                            <button className={styles.uploadBtn} type="button">
+                                <button className={styles.uploadBtn} type="button" onClick={handleUpload}>
                                 <i className="fas fa-upload"></i>
                                 Analizuj pliki ({uploadedFiles.length})
                             </button>

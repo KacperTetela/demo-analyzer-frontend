@@ -8,14 +8,14 @@
 }
 
 .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
+    /* REMOVED position: fixed to allow Flexbox in Layout to handle positioning */
     height: 100%;
     width: 250px;
+    min-width: 250px;
+        /* Essential for flexbox transitions */
     background: var(--bg-light);
     color: var(--text-light);
-    transition: width 0.3s ease, background 0.3s ease, color 0.3s ease;
+    transition: width 0.3s ease-in-out, min-width 0.3s ease-in-out;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     display: flex;
@@ -51,6 +51,8 @@
 
 .sidebar.collapsed {
     width: 80px;
+    min-width: 80px;
+        /* Essential for flexbox transitions */
 }
 
 .sidebar.collapsed .info {

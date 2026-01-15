@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styles from './Sidebar.module.css';
 import userIcon from '../../assets/user.png';
-// Assuming font awesome is loaded in index.html, otherwise might need icon library.
-// For now, I will assume font-awesome classes work if the user has included the link or will include it.
-// If not, I should probably suggest installing react-icons. The legacy code used `fas fa-home` etc.
 
 const Sidebar = ({ onCollapse }) => {
     const [isDark, setIsDark] = useState(false);
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const location = useLocation();
+    const navigate = useNavigate();
 
-    // Init state from local storage
     useEffect(() => {
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'dark') {
@@ -22,7 +20,10 @@ const Sidebar = ({ onCollapse }) => {
         const savedSidebarState = localStorage.getItem('sidebarCollapsed') === 'true';
         setIsCollapsed(savedSidebarState);
         onCollapse(savedSidebarState);
-    }, [onCollapse]);
+
+        const token = localStorage.getItem('jwt_token');
+        setIsLoggedIn(!!token);
+    }, [onCollapse, location]);
 
     const toggleTheme = () => {
         const newTheme = !isDark;
@@ -43,6 +44,13 @@ const Sidebar = ({ onCollapse }) => {
         onCollapse(newState);
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem('jwt_token');
+        localStorage.removeItem('refreshToken');
+        setIsLoggedIn(false);
+        navigate('/');
+    };
+
     const isActive = (path) => {
         return location.pathname === path ? styles.active : '';
     };
@@ -58,29 +66,38 @@ const Sidebar = ({ onCollapse }) => {
                     </div>
                 </div>
                 <div className={styles.menu}>
-                    <Link to="/senddemo" className={`${styles.menuItem} ${isActive('/senddemo')}`}>
-                        <i className="fas fa-home"></i>
-                        <span>Prześlij demo</span>
-                    </Link>
-                    <Link to="/demohistory" className={`${styles.menuItem} ${isActive('/demohistory')}`}>
-                        <i className="fas fa-chart-bar"></i>
-                        <span>Historia gier</span>
-                    </Link>
+                    {isLoggedIn && (
+                        <>
+                            <Link to="/senddemo" className={`${styles.menuItem} ${isActive('/senddemo')}`}>
+                                <i className="fas fa-home"></i>
+                                <span>Prześlij demo</span>
+                            </Link>
+                            <Link to="/demohistory" className={`${styles.menuItem} ${isActive('/demohistory')}`}>
+                                <i className="fas fa-chart-bar"></i>
+                                <span>Historia gier</span>
+                            </Link>
+                        </>
+                    )}
                 </div>
             </div>
             <div className={styles.bottom}>
-                <Link to="/login" className={styles.menuItem}>
-                    <i className="fas fa-sign-out-alt"></i>
-                    <span>Zaloguj się</span>
-                </Link>
-                <Link to="/account" className={`${styles.menuItem} ${isActive('/account')}`}>
-                    <i className="fas fa-user-circle"></i>
-                    <span>Konto</span>
-                </Link>
-                <div className={styles.menuItem}>
-                    <i className="fas fa-sign-out-alt"></i>
-                    <span>Wyloguj się</span>
-                </div>
+                {!isLoggedIn ? (
+                    <Link to="/login" className={styles.menuItem}>
+                        <i className="fas fa-sign-out-alt"></i>
+                        <span>Zaloguj się</span>
+                    </Link>
+                ) : (
+                    <>
+                            <Link to="/account" className={`${styles.menuItem} ${isActive('/account')}`}>
+                                <i className="fas fa-user-circle"></i>
+                                <span>Konto</span>
+                            </Link>
+                            <div className={styles.menuItem} onClick={handleLogout} style={{ cursor: 'pointer' }}>
+                                <i className="fas fa-sign-out-alt"></i>
+                                <span>Wyloguj się</span>
+                            </div>
+                    </>
+                )}
                 <div className={styles.toggleTheme} onClick={toggleTheme}>
                     <i className="fas fa-moon"></i>
                     <span>Tryb nocny</span>

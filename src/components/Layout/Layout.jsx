@@ -1,21 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '../Sidebar/Sidebar';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
+import styles from './Layout.module.css';
 
 const Layout = () => {
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const location = useLocation();
 
-    const contentStyle = {
-        marginLeft: isCollapsed ? '80px' : '250px',
-        transition: 'margin-left 0.3s ease',
-        padding: '20px 40px',
-        minHeight: '100vh',
-    };
+
+    const publicRoutes = ['/', '/login', '/register', '/auth'];
+
+
+    const showSidebar = !publicRoutes.includes(location.pathname);
+
+
+    useEffect(() => {
+        if (!showSidebar) {
+
+            document.documentElement.classList.remove('dark');
+        } else {
+
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+    }, [location.pathname, showSidebar]);
 
     return (
-        <div>
-            <Sidebar onCollapse={setIsCollapsed} />
-            <div style={contentStyle} className="main-content">
+        <div className={styles.layoutContainer}>
+            {showSidebar && <Sidebar onCollapse={setIsCollapsed} />}
+            <div className={styles.mainContent}>
                 <Outlet />
             </div>
         </div>
