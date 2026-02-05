@@ -51,14 +51,14 @@ const AuthPage = () => {
         <div className={`${styles.container} ${isSignUpActive ? styles.active : ''}`} id="container">
             <div className={`${styles.formContainer} ${styles.signUp}`}>
                 <form onSubmit={handleRegister}>
-                    <h1>Create Account</h1>
+                    <h1>Utwórz Konto</h1>
                     <div className={styles.socialIcons}>
 
                     </div>
-                    <span>or use your email for registration</span>
+                    <span>Wrowadź dane w celu rejestracji</span>
                     <input
                         type="text"
-                        placeholder="Name"
+                        placeholder="Nazwa użytkownika"
                         value={registerName}
                         onChange={(e) => setRegisterName(e.target.value)}
                     />
@@ -70,20 +70,20 @@ const AuthPage = () => {
                     />
                     <input
                         type="password"
-                        placeholder="Password"
+                        placeholder="Hasło"
                         value={registerPassword}
                         onChange={(e) => setRegisterPassword(e.target.value)}
                     />
-                    <button type="submit">Sign Up</button>
+                    <button type="submit">Zarejestruj się</button>
                 </form>
             </div>
             <div className={`${styles.formContainer} ${styles.signIn}`}>
                 <form onSubmit={handleLogin}>
-                    <h1>Sign In</h1>
+                    <h1>Zaloguj się</h1>
                     <div className={styles.socialIcons}>
 
                     </div>
-                    <span>or use your email password</span>
+                    <span>Wprowadź dane w celu logowania</span>
                     <input
                         type="email"
                         placeholder="Email"
@@ -92,36 +92,36 @@ const AuthPage = () => {
                     />
                     <input
                         type="password"
-                        placeholder="Password"
+                        placeholder="Hasło"
                         value={loginPassword}
                         onChange={(e) => setLoginPassword(e.target.value)}
                     />
-                    <a href="#">Forget Your Password?</a>
-                    <button type="submit">Sign In</button>
+                    <a href="#"></a>
+                    <button type="submit">Zaloguj się</button>
                 </form>
             </div>
             <div className={styles.toggleContainer}>
                 <div className={styles.toggle}>
                     <div className={`${styles.togglePanel} ${styles.toggleLeft}`}>
-                        <h1>Welcome Back!</h1>
-                        <p>Enter your personal details to use all of site features</p>
+                        <h1>Witaj ponownie!</h1>
+                        <p>Zaloguj się, aby uzyskać dostęp do swoich statystyk i panelu analiz.</p>
                         <button
                             className={styles.hidden}
                             onClick={() => setIsSignUpActive(false)}
                             id="login"
                         >
-                            Sign In
+                            Zaloguj się
                         </button>
                     </div>
                     <div className={`${styles.togglePanel} ${styles.toggleRight}`}>
-                        <h1>Hello, Friend!</h1>
-                        <p>Register with your personal details to use all of site features</p>
+                        <h1>Witaj!</h1>
+                        <p>Zarejestruj się, aby zacząć analizować mecze.</p>
                         <button
                             className={styles.hidden}
                             onClick={() => setIsSignUpActive(true)}
                             id="register"
                         >
-                            Sign Up
+                            Zarejestruj się
                         </button>
                     </div>
                 </div>
