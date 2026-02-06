@@ -1,447 +1,286 @@
-.demoHistoryContainer {
-    max-width: 1600px;
+.container {
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 20px;
 }
 
-.demoHistoryContainer h1 {
-    color: var(--text-light);
-    /* use generic var */
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.header h1 {
     font-size: 2.5rem;
+    color: var(--text-color);
     margin-bottom: 10px;
-    text-align: center;
-    font-weight: 600;
 }
 
-.subtitle {
-    text-align: center;
-    color: #666;
-    font-size: 1.1rem;
+.header p {
+    color: var(--text-muted);
+}
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 30px;
+    gap: 20px;
+        flex-wrap: wrap;
 }
 
-/* Filters Section */
-.filtersSection {
-    background: white;
-    border-radius: 12px;
-    padding: 30px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.searchBar {
+.searchWrapper {
     position: relative;
-    margin-bottom: 15px;
+    flex: 1;
+        max-width: 400px;
 }
 
-.searchBar i {
+.searchIcon {
     position: absolute;
-    left: 15px;
+    left: 12px;
     top: 50%;
     transform: translateY(-50%);
-    color: #666;
-    font-size: 1rem;
+    color: #94a3b8;
 }
 
-.searchBar input {
+.searchInput {
     width: 100%;
-    padding: 12px 15px 12px 45px;
-    border: 2px solid #ddd;
+    padding: 12px 12px 12px 40px;
     border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--border-color);
+        background: var(--bg-card);
+        color: var(--text-color);
+        transition: all 0.2s;
 }
 
-.searchBar input:focus {
-    outline: none;
-    border-color: var(--primary);
+.searchInput:focus {
+    border-color: #512da8;
     box-shadow: 0 0 0 3px rgba(81, 45, 168, 0.1);
-}
-
-.filterOptions {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.filterSelect {
-    padding: 10px 15px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    background: white;
-    cursor: pointer;
-    transition: border-color 0.3s ease;
-    min-width: 150px;
-}
-
-.filterSelect:focus {
     outline: none;
-    border-color: var(--primary);
 }
 
 .refreshBtn {
-    background: var(--primary);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     gap: 8px;
-    font-weight: 500;
+    padding: 10px 20px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        cursor: pointer;
+        color: var(--text-color);
+        transition: all 0.2s;
 }
 
 .refreshBtn:hover {
-    background: var(--primary-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(81, 45, 168, 0.3);
+    background: var(--bg-hover);
+        border-color: #512da8;
+        color: #512da8;
 }
 
-/* Demo List */
-.demoList {
+.grid {
     display: grid;
-    gap: 25px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
 }
 
-.demoItem {
-    background: white;
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 25px 30px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    border-left: 4px solid transparent;
+    overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
 }
 
-.demoItem:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border-color: #512da8;
 }
 
-.demoItem.win {
-    border-left-color: #4caf50;
-}
-
-.demoItem.loss {
-    border-left-color: #f44336;
-}
-
-.demoItem.tie {
-    border-left-color: #ff9800;
-}
-
-.demoHeader {
+.cardHeader {
+    padding: 16px;
+    background: rgba(81, 45, 168, 0.05);
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.demoInfo {
-    flex: 1;
-}
-
-.demoTitle {
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 5px;
-    display: flex;
     align-items: center;
-    gap: 10px;
+        border-bottom: 1px solid var(--border-color);
 }
 
-.mapIcon {
-    width: 24px;
-    height: 24px;
-    background: var(--primary);
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 0.8rem;
-    font-weight: bold;
-}
-
-.demoDate {
-    color: #666;
-    font-size: 0.9rem;
-}
-
-.demoScore {
-    text-align: right;
-}
-
-.scoreDisplay {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.scoreDisplay.win {
-    color: #4caf50;
-}
-
-.scoreDisplay.loss {
-    color: #f44336;
-}
-
-.scoreDisplay.tie {
-    color: #ff9800;
-}
-
-.resultLabel {
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-}
-
-.resultLabel.win {
-    color: #4caf50;
-}
-
-.resultLabel.loss {
-    color: #f44336;
-}
-
-.resultLabel.tie {
-    color: #ff9800;
-}
-
-.demoStats {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 15px;
-    margin-bottom: 15px;
-}
-
-.statItem {
-    text-align: center;
-    padding: 8px 6px;
-    background: #f8f9fa;
-    border-radius: 8px;
-}
-
-.statValue {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #333;
-    display: block;
-}
-
-.statLabel {
-    font-size: 0.8rem;
-    color: #666;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-top: 2px;
-}
-
-.demoActions {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-}
-
-.actionBtn {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
+.mapBadge {
     display: flex;
     align-items: center;
     gap: 6px;
-    text-decoration: none;
-    font-weight: 500;
+        font-weight: 600;
+        color: #512da8;
 }
 
-.viewBtn {
-    background: var(--primary);
+.date {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+}
+
+.cardBody {
+    padding: 20px;
+    flex: 1;
+}
+
+.statusRow {
+    margin-bottom: 10px;
+}
+
+.statusBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.statusSuccess {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.statusProcessing {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.statusError {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.cardFooter {
+    padding: 16px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.detailsBtn {
+    background: #512da8;
     color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
 }
 
-.viewBtn:hover {
-    background: var(--primary-hover);
-    transform: translateY(-1px);
-}
-
-.downloadBtn {
-    background: #2196f3;
-    color: white;
-}
-
-.downloadBtn:hover {
-    background: #1976d2;
-    transform: translateY(-1px);
-}
-
-.deleteBtn {
-    background: #f44336;
-    color: white;
-}
-
-.deleteBtn:hover {
-    background: #d32f2f;
-    transform: translateY(-1px);
+.detailsBtn:hover {
+    background: #43258b;
 }
 
 .loadingState,
 .emptyState {
     text-align: center;
     padding: 60px 20px;
-    color: #666;
+    color: var(--text-muted);
 }
 
-.loadingState i,
-.emptyState i {
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(81, 45, 168, 0.1);
+    border-left-color: #512da8;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+
+
+.emptyIcon {
     font-size: 3rem;
-    /* Adjusted size slightly */
-    margin-bottom: 20px;
-    color: var(--primary);
+    margin-bottom: 10px;
 }
 
-.emptyState i {
-    color: #ccc;
-    font-size: 4rem;
-}
-
-.uploadLink {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--primary);
+.ctaBtn {
+    margin-top: 20px;
+    background: #512da8;
     color: white;
-    text-decoration: none;
-    padding: 12px 24px;
+    border: none;
+    padding: 10px 24px;
     border-radius: 8px;
-    font-weight: 500;
-    transition: all 0.3s ease;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
 }
 
-.uploadLink:hover {
-    background: var(--primary-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(81, 45, 168, 0.3);
+/* Mini Score in History Card */
+/* Match Summary Grid */
+.matchSummary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+    gap: 10px;
 }
 
-/* Dark Mode Overrides */
-/* Note: :global(.dark) to target html.dark */
-:global(.dark) .demoHistoryContainer h1 {
-    color: #fff;
-}
-
-:global(.dark) .subtitle {
-    color: #ccc;
-}
-
-:global(.dark) .filtersSection {
-    background: #2d2d2d;
-    color: #fff;
-}
-
-:global(.dark) .searchBar input {
-    background: #3d3d3d;
-    border-color: #555;
-    color: #fff;
-}
-
-:global(.dark) .searchBar i {
-    color: #ccc;
-}
-
-:global(.dark) .filterSelect {
-    background: #3d3d3d;
-    border-color: #555;
-    color: #fff;
-}
-
-:global(.dark) .refreshBtn {
-    background: #bb86fc;
-    color: #000;
-}
-
-:global(.dark) .demoItem {
-    background: #2d2d2d;
-    color: #fff;
-}
-
-:global(.dark) .demoTitle {
-    color: #fff;
-}
-
-:global(.dark) .statItem {
-    background: #3d3d3d;
-}
-
-:global(.dark) .statValue {
-    color: #fff;
-}
-
-:global(.dark) .statLabel {
-    color: #ccc;
-}
-
-:global(.dark) .emptyState h3 {
-    color: #fff;
-}
-
-:global(.dark) .uploadLink {
-    background: #bb86fc;
-    color: #000;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .demoHistoryContainer {
-        padding: 0 10px;
+.teamList {
+    flex: 1;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+        gap: 2px;
+        width: 30%;
+        /* limit width */
     }
 
-    .filtersSection {
-        padding: 20px;
-    }
+.teamListRight {
+    text-align: right;
+    align-items: flex-end;
+}
 
-    .filterOptions {
-        flex-direction: column;
-        align-items: stretch;
-    }
+.playerItem {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+}
 
-    .filterSelect {
-        width: 100%;
-    }
+.scoreDisplay {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-color);
+    white-space: nowrap;
+    text-align: center;
+    min-width: 80px;
+}
 
-    .refreshBtn {
-        width: 100%;
-        justify-content: center;
-    }
+.winScore {
+    color: #10b981;
+}
 
-    .demoHeader {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+.lossScore {
+    color: #ef4444;
+}
 
-    .demoStats {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
-    }
+/* Dark mode adjustments done via vars in index.css typically, or explicit overrides */
+:global(.dark) .statusSuccess {
+    background: rgba(16, 185, 129, 0.2);
+}
+:global(.dark) .statusProcessing {
+    background: rgba(59, 130, 246, 0.2);
+}
 
-    .demoActions {
-        justify-content: flex-start;
-        flex-direction: column;
-    }
-
-    .actionBtn {
-        width: 100%;
-        justify-content: center;
-    }
+:global(.dark) .statusError {
+    background: rgba(239, 68, 68, 0.2);
 }

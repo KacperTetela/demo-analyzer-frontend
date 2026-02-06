@@ -53,7 +53,8 @@ const AuthPage = () => {
                 password: registerPassword
             });
 
-            saveTokens(res.accessToken, res.refreshToken);
+            const accessToken = res.accessToken || res.token || res.jwt;
+            saveTokens(accessToken, res.refreshToken);
             localStorage.setItem('user_email', registerEmail);
             navigate('/senddemo');
         } catch (error) {
@@ -71,7 +72,8 @@ const AuthPage = () => {
                 password: loginPassword
             });
 
-            saveTokens(res.accessToken, res.refreshToken);
+            const accessToken = res.accessToken || res.token || res.jwt;
+            saveTokens(accessToken, res.refreshToken);
             localStorage.setItem('user_email', loginEmail);
             navigate('/senddemo');
         } catch (error) {

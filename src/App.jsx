@@ -6,6 +6,7 @@ import Layout from './components/Layout/Layout';
 import SendDemo from './pages/SendDemo/SendDemo';
 import Account from './pages/Account/Account';
 import DemoHistory from './pages/DemoHistory/DemoHistory';
+import DemoDetails from './pages/DemoDetails/DemoDetails';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import PublicRoute from './components/PublicRoute/PublicRoute';
 import './index.css';
@@ -40,6 +41,11 @@ function App() {
           <Route path="demohistory" element={
             <ProtectedRoute>
               <DemoHistory />
+            </ProtectedRoute>
+          } />
+          <Route path="demo/:demId" element={
+            <ProtectedRoute>
+              <DemoDetails />
             </ProtectedRoute>
           } />
         </Route>

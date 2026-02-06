@@ -1,0 +1,261 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    margin-bottom: 30px;
+}
+
+.backBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+.backBtn:hover {
+    color: var(--text-color);
+}
+
+.titleRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.titleRow h1 {
+    font-size: 2rem;
+    color: var(--text-color);
+}
+
+.metaInfo {
+    display: flex;
+    gap: 15px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.metaItem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Scoreboard */
+.scoreboard {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px 40px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.team {
+    text-align: center;
+    flex: 1;
+}
+
+.teamName {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.players {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.scoreContainer {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 3rem;
+    font-weight: 800;
+}
+
+.score {
+    min-width: 60px;
+    text-align: center;
+    color: var(--text-color);
+}
+
+.scoreDivider {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 2rem;
+}
+
+/* Stats Section */
+.statsSection h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: var(--text-color);
+}
+
+.tabs {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 20px;
+    background: var(--border-color);
+    padding: 2px;
+    border-radius: 8px;
+    width: fit-content;
+}
+
+.tab {
+    padding: 8px 24px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: all 0.2s;
+}
+
+.tab.active {
+    background: white;
+    color: var(--text-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+:global(.dark) .tab.active {
+    background: #334155;
+    color: #fff;
+}
+
+.filterRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.sideTabs {
+    display: flex;
+    gap: 2px;
+    background: var(--border-color);
+    padding: 2px;
+    border-radius: 8px;
+}
+
+.sideTab {
+    padding: 6px 16px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: all 0.2s;
+}
+
+.sideTab.active {
+    background: #512da8;
+    color: white;
+    box-shadow: 0 2px 4px rgba(81, 45, 168, 0.2);
+}
+
+:global(.dark) .sideTab.active {
+    background: #512da8;
+}
+
+.splitTableContainer {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.teamColumn {
+    flex: 1;
+    min-width: 300px;
+}
+
+.teamColumnHeader {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--text-color);
+    text-align: center;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 8px 8px 0 0;
+}
+
+.tableContainer {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    padding: 14px 20px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table th {
+    background: rgba(81, 45, 168, 0.05);
+    color: #512da8;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table tr:last-child td {
+    border-bottom: none;
+}
+
+.table tr:hover td {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.playerName {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+/* Colors for Win/Loss */
+.winColor {
+    color: #10b981;
+}
+
+.lossColor {
+    color: #ef4444;
+}
+
+.loadingState {
+    text-align: center;
+    padding: 50px;
+    color: var(--text-muted);
+}

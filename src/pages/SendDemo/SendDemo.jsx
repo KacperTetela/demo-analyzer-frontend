@@ -1,10 +1,15 @@
 import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../../api/axios';
 import styles from './SendDemo.module.css';
-import { request } from '../../utils/api';
+import { Upload, X, CheckCircle, FileCode, AlertCircle, Loader } from 'lucide-react';
 
 const SendDemo = () => {
+    const navigate = useNavigate();
     const [dragActive, setDragActive] = useState(false);
-    const [uploadedFiles, setUploadedFiles] = useState([]);
+    const [file, setFile] = useState(null);
+    const [uploadStatus, setUploadStatus] = useState('idle'); // idle, uploading, processed, error
+    const [statusMessage, setStatusMessage] = useState('');
     const inputRef = useRef(null);
 
     const handleDrag = (e) => {
@@ -22,107 +27,61 @@ const SendDemo = () => {
         e.stopPropagation();
         setDragActive(false);
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-            handleFiles(e.dataTransfer.files);
+            handleFile(e.dataTransfer.files[0]);
         }
     };
 
     const handleChange = (e) => {
         e.preventDefault();
         if (e.target.files && e.target.files[0]) {
-            handleFiles(e.target.files);
+            handleFile(e.target.files[0]);
         }
     };
 
-    const handleFiles = (files) => {
-        const newFiles = Array.from(files).filter(file => {
-            if (file.name.toLowerCase().endsWith('.dem')) {
-                if (uploadedFiles.some(f => f.name === file.name && f.size === file.size)) {
-                    alert(`Plik "${file.name}" już został dodany`);
-                    return false;
-                }
-                return true;
-            } else {
-                alert(`Plik "${file.name}" nie jest plikiem .dem`);
-                return false;
-            }
-        }).map(file => ({
-            file,
-            name: file.name,
-            size: formatFileSize(file.size),
-            id: Date.now() + Math.random(),
-            uploadStatus: 'idle', // idle, uploading, processing, completed, error
-            statusMessage: ''
-        }));
-
-        setUploadedFiles(prev => [...prev, ...newFiles]);
+    const handleFile = (selectedFile) => {
+        if (!selectedFile.name.toLowerCase().endsWith('.dem')) {
+            alert('Proszę wybrać plik z rozszerzeniem .dem');
+            return;
+        }
+        setFile(selectedFile);
+        setUploadStatus('idle');
+        setStatusMessage('');
     };
 
-    const updateFileStatus = (id, status, message = '') => {
-        setUploadedFiles(prev => prev.map(f =>
-            f.id === id ? { ...f, uploadStatus: status, statusMessage: message } : f
-        ));
-    };
-
-    const pollStatus = async (demId, fileId) => {
-        const pollInterval = setInterval(async () => {
-            try {
-                const statusRes = await request(`/api/dem/${demId}/status`, { method: 'GET' });
-                // Assuming statusRes contains { status: "COMPLETED" | "processing" | "error" }
-                if (statusRes.status === 'COMPLETED') {
-                    clearInterval(pollInterval);
-                    updateFileStatus(fileId, 'completed', 'Analiza zakończona!');
-                } else if (statusRes.status === 'ERROR') {
-                    clearInterval(pollInterval);
-                    updateFileStatus(fileId, 'error', 'Błąd analizy');
-                } else {
-                    updateFileStatus(fileId, 'processing', `Przetwarzanie... (${statusRes.status})`);
-                }
-            } catch (err) {
-                console.error("Polling error", err);
-                clearInterval(pollInterval);
-                updateFileStatus(fileId, 'error', 'Błąd sprawdzania statusu');
-            }
-        }, 2000); // Check every 2 seconds
+    const removeFile = () => {
+        setFile(null);
+        setUploadStatus('idle');
+        setStatusMessage('');
     };
 
     const handleUpload = async () => {
-        const filesToUpload = uploadedFiles.filter(f => f.uploadStatus === 'idle' || f.uploadStatus === 'error');
+        if (!file) return;
 
-        if (filesToUpload.length === 0) {
-            alert('Brak nowych plików do przesłania.');
-            return;
-        }
+        setUploadStatus('uploading');
+        setStatusMessage('Przetwarzanie dema...'); // Per user request
 
-        for (const fileObj of filesToUpload) {
-            updateFileStatus(fileObj.id, 'uploading', 'Wysyłanie...');
-            const formData = new FormData();
-            formData.append('file', fileObj.file);
+        const formData = new FormData();
+        formData.append('file', file);
 
-            try {
-                // Returns DemStatusResponse, assuming it has { demId: 123, status: ... }
-                const response = await request('/api/dem/upload', {
-                    method: 'POST',
-                    body: formData
-                });
+        try {
+            // POST /api/dem/upload
+            // Do NOT set Content-Type manually for FormData; axios/browser does it with boundary
+            const response = await api.post('/api/dem/upload', formData);
 
-                updateFileStatus(fileObj.id, 'processing', 'Przesłano. Oczekiwanie na analizę...');
+            // Assuming success 200 OK means processed
+            setUploadStatus('processed');
+            setStatusMessage('Plik Dem jest w trakcie analizy');
 
-                if (response && response.demId) {
-                    pollStatus(response.demId, fileObj.id);
-                } else {
-                    updateFileStatus(fileObj.id, 'error', 'Nie otrzymano ID demka');
-                }
+            // Redirect to history immediately on success
+            setTimeout(() => {
+                navigate('/demohistory');
+            }, 1000);
 
-            } catch (error) {
-                console.error(error);
-                updateFileStatus(fileObj.id, 'error', `Błąd wysyłania: ${error.message}`);
-            }
-        }
-    };
-
-    const clearAll = () => {
-        if (window.confirm('Czy na pewno chcesz usunąć wszystkie wybrane pliki?')) {
-            setUploadedFiles([]);
+        } catch (error) {
+            console.error(error);
+            setUploadStatus('error');
+            const errorMsg = error.response?.data?.message || error.message || 'Wystąpił błąd podczas przesyłania.';
+            setStatusMessage(`Błąd: ${errorMsg}`);
         }
     };
 
@@ -139,90 +98,83 @@ const SendDemo = () => {
     };
 
     return (
-        <div>
+        <div className={styles.container}>
             <div className={styles.welcomeMessage}>
                 <h1>Prześlij Demo</h1>
-                <p>Przesyłaj pliki .dem do analizy</p>
+                <p>Prześlij plik .dem do analizy (tylko jeden plik jednocześnie)</p>
             </div>
 
-            <form
-                className={`${styles.dropArea} ${dragActive ? styles.dragover : ''}`}
-                onDragEnter={handleDrag}
-                onDragLeave={handleDrag}
-                onDragOver={handleDrag}
-                onDrop={handleDrop}
-                onSubmit={(e) => e.preventDefault()}
-            >
-                {uploadedFiles.length === 0 ? (
-                    <div className={styles.dropContent}>
-                        <i className={`fas fa-cloud-upload-alt ${styles.uploadIcon}`}></i>
-                        <div className={styles.dropText}>Przeciągnij i upuść pliki .dem tutaj</div>
-                        <div className={styles.dropOr}>lub</div>
-                        <button className={styles.selectBtn} onClick={onButtonClick} type="button">
-                            <i className="fas fa-folder-open"></i>
-                            Wybierz pliki
-                        </button>
-                        <div className={styles.fileInfo}>Akceptowane pliki: .dem (maks. 50MB każdy)</div>
-                    </div>
+            <div className={styles.uploadCard}>
+                {!file ? (
+                    <form
+                        className={`${styles.dropArea} ${dragActive ? styles.dragover : ''}`}
+                        onDragEnter={handleDrag}
+                        onDragLeave={handleDrag}
+                        onDragOver={handleDrag}
+                        onDrop={handleDrop}
+                        onSubmit={(e) => e.preventDefault()}
+                        onClick={onButtonClick}
+                    >
+                        <Upload size={48} className={styles.uploadIcon} />
+                        <div className={styles.dropText}>Przeciągnij i upuść plik .dem tutaj</div>
+                        <div className={styles.dropOr}>lub kliknij, aby wybrać</div>
+                        <div className={styles.fileInfo}>Maksymalny rozmiar: 1GB</div>
+                    </form>
                 ) : (
-                    <div className={styles.uploadedFiles}>
-                        <div className={styles.filesHeader}>
-                            <h3><i className="fas fa-check-circle"></i> Wybrane pliki ({uploadedFiles.length})</h3>
-                            <button className={styles.addMoreBtn} onClick={onButtonClick} type="button">
-                                <i className="fas fa-plus"></i> Dodaj więcej
-                            </button>
-                        </div>
-                        <div className={styles.fileList}>
-                            {uploadedFiles.map(file => (
-                                <div className={styles.fileItem} key={file.id}>
-                                    <div className={styles.fileInfoSection}>
-                                        <i className={`fas fa-file-code ${styles.fileIcon}`}></i>
-                                        <div className={styles.fileDetails}>
-                                            <span className={styles.fileName}>{file.name}</span>
-                                            <span className={styles.fileSize}>{file.size}</span>
-                                            {file.statusMessage && (
-                                                <span className={`${styles.statusMessage} ${styles[file.uploadStatus]}`}>
-                                                    {file.statusMessage}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div className={styles.fileActions}>
-                                        {file.uploadStatus === 'processing' || file.uploadStatus === 'uploading' ? (
-                                            <i className="fas fa-spinner fa-spin"></i>
-                                        ) : file.uploadStatus === 'completed' ? (
-                                            <i className="fas fa-check-circle" style={{ color: 'green' }}></i>
-                                        ) : (
-                                                    <button className={styles.removeBtn} onClick={() => removeFile(file.id)} type="button">
-                                                        <i className="fas fa-times"></i>
-                                                    </button>
-                                        )}
-                                    </div>
+                        <div className={styles.filePreview}>
+                            <div className={styles.fileCard}>
+                                <FileCode size={32} className={styles.fileIcon} />
+                                <div className={styles.fileDetails}>
+                                    <span className={styles.fileName}>{file.name}</span>
+                                    <span className={styles.fileSize}>{formatFileSize(file.size)}</span>
                                 </div>
-                            ))}
-                        </div>
-                        <div className={styles.uploadActions}>
-                                <button className={styles.uploadBtn} type="button" onClick={handleUpload}>
-                                <i className="fas fa-upload"></i>
-                                Analizuj pliki ({uploadedFiles.length})
-                            </button>
-                            <button className={styles.clearBtn} onClick={clearAll} type="button">
-                                <i className="fas fa-trash"></i>
-                                Wyczyść wszystkie
-                            </button>
-                        </div>
+                                {uploadStatus === 'idle' && (
+                                    <button type="button" onClick={removeFile} className={styles.removeBtn}>
+                                        <X size={20} />
+                                    </button>
+                                )}
+                            </div>
+
+                            {uploadStatus === 'idle' && (
+                                <button onClick={handleUpload} className={styles.uploadBtn}>
+                                    <Upload size={20} />
+                                    Rozpocznij Analizę
+                                </button>
+                            )}
+
+                            {uploadStatus === 'uploading' && (
+                                <div className={styles.statusContainer}>
+                                    <Loader size={24} className={styles.spinner} />
+                                    <span>{statusMessage}</span>
+                                </div>
+                            )}
+
+                            {uploadStatus === 'processed' && (
+                                <div className={`${styles.statusContainer} ${styles.success}`}>
+                                    <CheckCircle size={24} />
+                                    <span>{statusMessage}</span>
+                                </div>
+                            )}
+
+                            {uploadStatus === 'error' && (
+                                <div className={`${styles.statusContainer} ${styles.error}`}>
+                                    <AlertCircle size={24} />
+                                    <span>{statusMessage}</span>
+                                    <button onClick={() => setUploadStatus('idle')} className={styles.retryBtn}>Spróbuj ponownie</button>
+                                </div>
+                            )}
                     </div>
                 )}
+
                 <input
                     ref={inputRef}
                     type="file"
                     id="fileInput"
-                    multiple
                     accept=".dem"
                     style={{ display: 'none' }}
                     onChange={handleChange}
                 />
-            </form>
+            </div>
         </div>
     );
 };
