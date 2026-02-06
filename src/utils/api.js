@@ -41,3 +41,16 @@ export const apiPost = (endpoint, body) => {
         body
     });
 };
+
+export const apiPatch = (endpoint, body) => {
+    return request(endpoint, {
+        method: 'PATCH',
+        body
+    });
+};
+
+export const apiDelete = (endpoint) => {
+    return request(endpoint, {
+        method: 'DELETE'
+    });
+};

@@ -7,7 +7,7 @@ const Home = () => {
         <div className={styles.container}>
             {/* Hero Section */}
             <section className={styles.hero}>
-                <h1 className={styles.title}>Demo Analyzer</h1>
+                <h1 className={styles.title}>Dem Analyzer</h1>
                 <p className={styles.subtitle}>
                     Deep insights into your CS2 matches. Advanced analytics, detailed stats, and performance tracking.
                 </p>
@@ -23,7 +23,7 @@ const Home = () => {
 
             {/* What is this Section */}
             <section className={styles.section}>
-                <h2 className={styles.sectionTitle}>Czym jest Demo Analyzer?</h2>
+                <h2 className={styles.sectionTitle}>Czym jest Dem Analyzer?</h2>
                 <div className={styles.featureGrid}>
                     <div className={styles.card}>
                         <div className={styles.cardIcon}>
@@ -54,7 +54,7 @@ const Home = () => {
                 <h2 className={styles.sectionTitle}>Czym są Dema?</h2>
                 <div style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
                     <p style={{ fontSize: '1.2rem', marginBottom: '2rem', lineHeight: '1.6' }}>
-                        Demo to plik z rozszerzeniem <strong>.dem</strong>, który zawiera pełne nagranie meczu CS2.
+                        Dem to plik z rozszerzeniem <strong>.dem</strong>, który zawiera pełne nagranie meczu CS2.
                         Dzięki temu plikowi możemy odtworzyć każdy ruch, strzał i wydarzenie z gry z perspektywy każdego gracza.
                     </p>
                     <div className={styles.card} style={{ display: 'inline-block', textAlign: 'left' }}>

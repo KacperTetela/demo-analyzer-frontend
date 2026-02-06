@@ -8,32 +8,61 @@ const AuthPage = () => {
     const navigate = useNavigate();
 
     // Register State
-    const [registerName, setRegisterName] = useState('');
     const [registerEmail, setRegisterEmail] = useState('');
     const [registerPassword, setRegisterPassword] = useState('');
+    const [registerApiError, setRegisterApiError] = useState('');
+
+    // Password Validation State
+    const [registerPasswordError, setRegisterPasswordError] = useState('');
+
 
     // Login State
     const [loginEmail, setLoginEmail] = useState('');
     const [loginPassword, setLoginPassword] = useState('');
 
+    const validatePassword = (password) => {
+        if (password.length < 5 || password.length > 20) {
+            return "Hasło musi mieć od 5 do 20 znaków.";
+        }
+        if (!/[a-z]/.test(password)) {
+            return "Hasło musi zawierać małą literę.";
+        }
+        if (!/[A-Z]/.test(password)) {
+            return "Hasło musi zawierać wielką literę.";
+        }
+        if (!/[!@#$%^&*]/.test(password)) {
+            return "Hasło musi zawierać znak specjalny (!@#$%^&*).";
+        }
+        return "";
+    };
+
     const handleRegister = async (e) => {
         e.preventDefault();
+        setRegisterApiError('');
+
+        const error = validatePassword(registerPassword);
+        if (error) {
+            setRegisterPasswordError(error);
+            return;
+        }
+
         try {
             const res = await apiPost("/api/auth/register", {
                 email: registerEmail,
-                password: registerPassword,
-                name: registerName
+                password: registerPassword
             });
 
             saveTokens(res.accessToken, res.refreshToken);
+            localStorage.setItem('user_email', registerEmail);
             navigate('/senddemo');
         } catch (error) {
-            alert("Rejestracja nieudana: " + error.message);
+            setRegisterApiError(error.message || "Rejestracja nieudana.");
         }
     };
 
     const handleLogin = async (e) => {
         e.preventDefault();
+
         try {
             const res = await apiPost("/api/auth/login", {
                 email: loginEmail,
@@ -41,6 +70,7 @@ const AuthPage = () => {
             });
 
             saveTokens(res.accessToken, res.refreshToken);
+            localStorage.setItem('user_email', loginEmail);
             navigate('/senddemo');
         } catch (error) {
             alert("Logowanie nieudane: " + error.message);
@@ -57,24 +87,26 @@ const AuthPage = () => {
                     </div>
                     <span>Wrowadź dane w celu rejestracji</span>
                     <input
-                        type="text"
-                        placeholder="Nazwa użytkownika"
-                        value={registerName}
-                        onChange={(e) => setRegisterName(e.target.value)}
-                    />
-                    <input
                         type="email"
                         placeholder="Email"
                         value={registerEmail}
-                        onChange={(e) => setRegisterEmail(e.target.value)}
+                        onChange={(e) => {
+                            setRegisterEmail(e.target.value);
+                            setRegisterApiError(''); // Clear error on typing
+                        }}
                     />
+                    {registerApiError && <span className={styles.validationError}>{registerApiError}</span>}
                     <input
                         type="password"
                         placeholder="Hasło"
                         value={registerPassword}
-                        onChange={(e) => setRegisterPassword(e.target.value)}
+                        onChange={(e) => {
+                            setRegisterPassword(e.target.value);
+                            setRegisterPasswordError(validatePassword(e.target.value));
+                        }}
                     />
-                    <button type="submit">Zarejestruj się</button>
+                    {registerPasswordError && <span className={styles.validationError}>{registerPasswordError}</span>}
+                    <button type="submit" disabled={!!registerPasswordError}>Zarejestruj się</button>
                 </form>
             </div>
             <div className={`${styles.formContainer} ${styles.signIn}`}>

@@ -7,6 +7,7 @@ const Sidebar = ({ onCollapse }) => {
     const [isDark, setIsDark] = useState(false);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [userEmail, setUserEmail] = useState('');
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -22,7 +23,9 @@ const Sidebar = ({ onCollapse }) => {
         onCollapse(savedSidebarState);
 
         const token = localStorage.getItem('jwt_token');
+        const email = localStorage.getItem('user_email');
         setIsLoggedIn(!!token);
+        if (email) setUserEmail(email);
     }, [onCollapse, location]);
 
     const toggleTheme = () => {
@@ -61,15 +64,14 @@ const Sidebar = ({ onCollapse }) => {
                 <div className={styles.header}>
                     <img src={userIcon} alt="usuario" />
                     <div className={styles.info}>
-                        <strong>Kacper</strong><br />
-                        v0.1.0
+                        <strong>{userEmail || 'Użytkownik'}</strong><br />
                     </div>
                 </div>
                 <div className={styles.menu}>
                     {isLoggedIn && (
                         <>
                             <Link to="/senddemo" className={`${styles.menuItem} ${isActive('/senddemo')}`}>
-                                <i className="fas fa-home"></i>
+                                <i className="fas fa-cloud-upload-alt"></i>
                                 <span>Prześlij demo</span>
                             </Link>
                             <Link to="/demohistory" className={`${styles.menuItem} ${isActive('/demohistory')}`}>
