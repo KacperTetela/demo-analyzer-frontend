@@ -19,6 +19,7 @@ const AuthPage = () => {
     // Login State
     const [loginEmail, setLoginEmail] = useState('');
     const [loginPassword, setLoginPassword] = useState('');
+    const [loginApiError, setLoginApiError] = useState('');
 
     const validatePassword = (password) => {
         if (password.length < 5 || password.length > 20) {
@@ -62,6 +63,7 @@ const AuthPage = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setLoginApiError('');
 
         try {
             const res = await apiPost("/api/auth/login", {
@@ -73,7 +75,22 @@ const AuthPage = () => {
             localStorage.setItem('user_email', loginEmail);
             navigate('/senddemo');
         } catch (error) {
-            alert("Logowanie nieudane: " + error.message);
+            let errorMsg = "Wystąpił błąd logowania. Spróbuj ponownie.";
+            const rawError = (error.message || "").toLowerCase();
+
+            if (rawError.includes("bad credentials") || rawError.includes("credentials are wrong") || [401, 403].includes(error.status)) {
+                errorMsg = "Nieprawidłowy email lub hasło.";
+            } else if (rawError.includes("locked") || rawError.includes("disabled")) {
+                errorMsg = "Konto jest nieaktywne.";
+            } else if (rawError.includes("network") || rawError.includes("failed to fetch")) {
+                errorMsg = "Błąd połączenia z serwerem.";
+            } else if (error.message) {
+                // Fallback to backend message if it's something specific but not caught above, 
+                // but typically we want to hide it.
+                // For now, let's keep the generic one for unknown backend errors to be safe UI-wise.
+            }
+
+            setLoginApiError(errorMsg);
         }
     };
 
@@ -120,14 +137,21 @@ const AuthPage = () => {
                         type="email"
                         placeholder="Email"
                         value={loginEmail}
-                        onChange={(e) => setLoginEmail(e.target.value)}
+                        onChange={(e) => {
+                            setLoginEmail(e.target.value);
+                            setLoginApiError(''); // Clear error on typing
+                        }}
                     />
                     <input
                         type="password"
                         placeholder="Hasło"
                         value={loginPassword}
-                        onChange={(e) => setLoginPassword(e.target.value)}
+                        onChange={(e) => {
+                            setLoginPassword(e.target.value);
+                            setLoginApiError(''); // Clear error on typing
+                        }}
                     />
+                    {loginApiError && <span className={styles.validationError}>{loginApiError}</span>}
                     <a href="#"></a>
                     <button type="submit">Zaloguj się</button>
                 </form>

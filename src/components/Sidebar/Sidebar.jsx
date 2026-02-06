@@ -64,7 +64,7 @@ const Sidebar = ({ onCollapse }) => {
                 <div className={styles.header}>
                     <img src={userIcon} alt="usuario" />
                     <div className={styles.info}>
-                        <strong>{userEmail || 'Użytkownik'}</strong><br />
+                        <strong>{userEmail || 'Użytkownik'}</strong>
                     </div>
                 </div>
                 <div className={styles.menu}>

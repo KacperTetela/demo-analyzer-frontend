@@ -32,6 +32,7 @@
 .header {
     display: flex;
     align-items: center;
+        /* Force vertical centering */
     padding: 20px;
     gap: 12px;
 }
@@ -40,6 +41,10 @@
     width: 45px;
     height: 45px;
     border-radius: 50%;
+    display: block;
+        /* Remove inline spacing */
+        margin: 0;
+        /* Remove margins */
 }
 
 .info {
@@ -47,6 +52,30 @@
     overflow: hidden;
     opacity: 1;
     transition: opacity 0.2s ease;
+    width: 100%;
+        /* Ensure width is constrained */
+        display: flex;
+        /* Use flex to align content if needed */
+        flex-direction: column;
+        justify-content: center;
+        /* Center vertically inside info */
+        margin: 0;
+        /* Remove potential margins */
+    }
+    
+    .info strong {
+        font-size: 0.75rem;
+        /* text-xs equivalent */
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: inherit;
+        width: 100%;
+        margin: 0;
+        /* Clear margins */
+        line-height: 1.2;
+        /* Tighter line height but allows descenders */
 }
 
 .sidebar.collapsed {
