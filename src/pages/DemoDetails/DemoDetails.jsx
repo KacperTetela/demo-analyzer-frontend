@@ -207,12 +207,12 @@ const DemoDetails = () => {
                         valueLabel="Entries"
                     />
                     <StatCard
-                        label="Clutch Minister"
+                        label="Najwięcej CLUTCHY"
                         stat={getBestStat(playerStats, 'clutchesWon')}
                         valueLabel="Clutches"
                     />
                     <StatCard
-                        label="Support (Trades)"
+                        label="Najwięcej TRADÓW"
                         stat={getBestStat(playerStats, 'totalTrades')}
                         valueLabel="Trades"
                     />

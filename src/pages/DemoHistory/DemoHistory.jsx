@@ -92,8 +92,8 @@ const DemoHistory = () => {
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <h1>Historia Meczów</h1>
-                <p>Przeglądaj swoje przeanalizowane demka z Counter-Strike 2</p>
+                <h1>Historia gier</h1>
+                <p>Przeglądaj wcześniej przeanalizowane dema z gry Counter-Strike 2</p>
             </div>
 
             <div className={styles.toolbar}>
