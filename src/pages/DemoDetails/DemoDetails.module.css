@@ -184,30 +184,34 @@
 
 .splitTableContainer {
     display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
+    flex-direction: column;
+        gap: 30px;
 }
 
 .teamColumn {
-    flex: 1;
-    min-width: 300px;
+    width: 100%;
 }
 
 .teamColumnHeader {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 10px;
+    font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 0;
     color: var(--text-color);
-    text-align: center;
-    padding: 10px;
-    background: rgba(0, 0, 0, 0.03);
-    border-radius: 8px 8px 0 0;
+    text-align: left;
+        padding: 15px 20px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-bottom: none;
+        border-radius: 12px 12px 0 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
 }
 
 .tableContainer {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
+    border-radius: 0 0 12px 12px;
     overflow-x: auto;
 }
 
@@ -258,4 +262,107 @@
     text-align: center;
     padding: 50px;
     color: var(--text-muted);
+}
+.errorState {
+    text-align: center;
+    padding: 50px;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+/* Key Stats Section (Trivia) */
+.keyStatsSection {
+    margin-top: 40px;
+}
+
+.keyStatsSection h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: var(--text-color);
+}
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.statCard {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.statCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+    border-color: #512da8;
+}
+
+.statLabel {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.statValue {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #512da8;
+    margin-bottom: 5px;
+}
+
+.statPlayer {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+:global(.dark) .statCard:hover {
+    border-color: #7c4dff;
+}
+
+/* Decorative Section Headers */
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    margin-top: 40px;
+}
+
+.sectionHeader h2 {
+    font-size: 1.5rem;
+    color: var(--text-color);
+    margin: 0;
+    font-weight: 700;
+}
+
+.decorativeLine {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(to right, var(--border-color), transparent);
+    border-radius: 1px;
+}
+
+.accentBlock {
+    width: 6px;
+    height: 28px;
+    background: #512da8;
+    border-radius: 3px;
+    box-shadow: 0 0 10px rgba(81, 45, 168, 0.4);
+}
+
+:global(.dark) .accentBlock {
+    background: #7c4dff;
+    box-shadow: 0 0 10px rgba(124, 77, 255, 0.4);
 }

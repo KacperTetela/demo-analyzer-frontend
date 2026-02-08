@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import styles from './DemoDetails.module.css';
-import { ArrowLeft, Map, Calendar, Server, Clock, Trophy } from 'lucide-react';
+import { ArrowLeft, Map, Calendar, Server } from 'lucide-react';
 import { clsx } from 'clsx';
 
 const DemoDetails = () => {
@@ -10,13 +10,10 @@ const DemoDetails = () => {
     const navigate = useNavigate();
     const [details, setDetails] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('rating'); // rating, adr, kast
-    const [selectedSide, setSelectedSide] = useState('ALL');
 
     useEffect(() => {
         const fetchDetails = async () => {
             try {
-                // GET /api/dem/{id}/details
                 const response = await api.get(`/api/dem/${demId}/details`);
                 setDetails(response.data);
             } catch (error) {
@@ -51,139 +48,89 @@ const DemoDetails = () => {
         );
     }
 
-    const { teamA, teamB, mapName, serverName, createdAt, statsRating, statsAdr, statsKast } = details;
+    const { teamA, teamB, mapName, serverName, createdAt, sideWins, playerStats } = details;
 
-    const getTeamPlayers = (teamObj) => {
+    // 1. LOGIKA MAPOWANIA DRUŻYN
+    const getTeamPlayerNames = (teamObj) => {
         if (!teamObj) return [];
-        // Extract values that look like player names (assuming keys like player1, player2 or just matching values)
-        // Simplest strategy: collect all string values from the team object that are not 'Team A' etc.
-        // Or better: filter stats by checking if player.name exists in teamA values.
-        return Object.values(teamObj).map(v => String(v));
+        return Object.keys(teamObj)
+            .filter(key => key.startsWith('player'))
+            .map(key => teamObj[key]);
     };
 
-    const teamAPlayers = getTeamPlayers(teamA);
-    const teamBPlayers = getTeamPlayers(teamB);
+    const teamANames = getTeamPlayerNames(teamA);
+    const teamBNames = getTeamPlayerNames(teamB);
 
-    const splitStats = (statsArray) => {
-        if (!statsArray) return { teamAStats: [], teamBStats: [] };
+    const teamAStats = playerStats.filter(p => teamANames.includes(p.playerName));
+    const teamBStats = playerStats.filter(p => teamBNames.includes(p.playerName));
 
-        const teamAStats = [];
-        const teamBStats = [];
+    // Force standard Team names as requested
+    const teamAName = "Team A";
+    const teamBName = "Team B";
 
-        statsArray.forEach(player => {
-            // Check if player name is in Team A's values
-            if (teamAPlayers.includes(player.name)) {
-                teamAStats.push(player);
-            } else if (teamBPlayers.includes(player.name)) {
-                teamBStats.push(player);
-            } else {
-                // Fallback: simple heuristic or add to both? Start with A if unknown or maybe generic list.
-                // For now, let's assume valid data.
-                // Optional: Check if index < 5 -> A, else B (common in CS demos if ordered)
-                teamAStats.push(player); // Defaulting to A if not found might be wrong, but safer than hiding.
-            }
-        });
-
-        // If one is empty and other full, maybe the matching failed. Try index based split if 10 players?
-        if (teamAStats.length === 0 && teamBStats.length === 0 && statsArray.length === 10) {
-            return {
-                teamAStats: statsArray.slice(0, 5),
-                teamBStats: statsArray.slice(5)
-            }
-        }
-
-        return { teamAStats, teamBStats };
+    // Capitalize map name helper
+    const formatMapName = (name) => {
+        if (!name) return 'Unknown Map';
+        const cleanName = name.replace('de_', '');
+        return cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
     };
 
-    const renderTableContent = (stats, type) => {
-        return (
+    const getSideWinsText = (sideData) => {
+        if (!sideData) return '';
+        return `(CT: ${sideData.ctWins} / T: ${sideData.tWins})`;
+    };
+
+    const renderStatsTable = (stats) => (
+        <div className={styles.tableContainer}>
             <table className={styles.table}>
                 <thead>
                     <tr>
-                        <th>Gracz</th>
-                        {type === 'rating' && <><th>K/D</th><th>Rating</th></>}
-                        {type === 'adr' && <><th>Dmg</th><th>ADR</th></>}
-                        {type === 'kast' && <><th>KAST</th><th>%</th></>}
+                        <th style={{ width: '25%' }}>Gracz</th>
+                        <th>Kills</th>
+                        <th>Deaths</th>
+                        <th>Rating</th>
+                        <th>ADR</th>
+                        <th>KAST</th>
+                        <th>Entry (K)</th>
+                        <th>Clutch</th>
+                        <th>Trade</th>
                     </tr>
                 </thead>
                 <tbody>
                     {stats.map((player, idx) => (
-                        <tr key={idx}>
-                            <td className={styles.playerName}>{player.name}</td>
-
-                            {type === 'rating' && (
-                                <>
-                                    <td>{player.kills}/{player.deaths}</td>
-                                    <td style={{ color: player.rating >= 1.0 ? 'green' : 'red', fontWeight: 'bold' }}>
-                                        {player.rating?.toFixed(2)}
-                                    </td>
-                                </>
-                            )}
-
-                            {type === 'adr' && (
-                                <>
-                                    <td>{player.dmg?.toFixed(0)}</td>
-                                    <td>{player.adr?.toFixed(1)}</td>
-                                </>
-                            )}
-
-                            {type === 'kast' && (
-                                <>
-                                    <td>{player.kastRounds}</td>
-                                    <td>{player.kast?.toFixed(1)}%</td>
-                                </>
-                            )}
+                        <tr key={player.playerName || idx}>
+                            <td className={styles.playerName}>{player.playerName}</td>
+                            <td>{player.kills}</td>
+                            <td>{player.deaths}</td>
+                            <td className={player.rating >= 1.0 ? styles.winColor : styles.lossColor} style={{ fontWeight: 'bold' }}>
+                                {player.rating?.toFixed(2)}
+                            </td>
+                            <td>{player.adr?.toFixed(1)}</td>
+                            <td>{player.kast?.toFixed(0)}%</td>
+                            <td>{player.entryKills}</td>
+                            <td>{player.clutchesWon}</td>
+                            <td>{player.totalTrades}</td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-        );
-    };
-
-    const renderStatsTable = () => {
-        let currentStats = [];
-        if (activeTab === 'rating') currentStats = statsRating;
-        if (activeTab === 'adr') currentStats = statsAdr;
-        if (activeTab === 'kast') currentStats = statsKast;
-
-        // Filter by selected side if property exists
-        const filteredStats = currentStats?.filter(stat =>
-            stat.side && stat.side.toUpperCase() === selectedSide
-        ) || [];
-
-        const { teamAStats, teamBStats } = splitStats(filteredStats);
-
-        return (
-            <div className={styles.splitTableContainer}>
-                <div className={styles.teamColumn}>
-                    <div className={styles.teamColumnHeader}>Team A</div>
-                    <div className={styles.tableContainer}>
-                        {renderTableContent(teamAStats, activeTab)}
-                    </div>
-                </div>
-                <div className={styles.teamColumn}>
-                    <div className={styles.teamColumnHeader}>Team B</div>
-                    <div className={styles.tableContainer}>
-                        {renderTableContent(teamBStats, activeTab)}
-                    </div>
-                </div>
-            </div>
-        );
-    };
+        </div>
+    );
 
     return (
         <div className={styles.container}>
+            {/* Header */}
             <div className={styles.header}>
                 <button onClick={() => navigate('/demohistory')} className={styles.backBtn}>
                     <ArrowLeft size={18} /> Powrót do historii
                 </button>
 
                 <div className={styles.titleRow}>
-                    <h1>{mapName?.replace('de_', '') || 'Unknown Map'}</h1>
+                    <h1>{formatMapName(mapName)}</h1>
                     <div className={styles.metaInfo}>
                         <div className={styles.metaItem}>
                             <Map size={16} />
-                            <span>{mapName}</span>
+                            <span>{formatMapName(mapName)}</span>
                         </div>
                         <div className={styles.metaItem}>
                             <Server size={16} />
@@ -197,91 +144,121 @@ const DemoDetails = () => {
                 </div>
             </div>
 
-            <div className={styles.scoreboard}>
-                <div className={styles.team}>
-                    <div className={styles.teamName}>Team A</div>
-                    <div className={styles.players}>
-                        {/* Assuming teamA has specific player fields based on JSON example, 
-                            but optimally it should be a list. JSON example showed: "player1": "Nick"... 
-                            We'll extract values or simpler just show score for now unless we iterate keys */}
-                        {Object.keys(teamA).filter(k => k.startsWith('player')).map(k => (
-                            <span key={k}>{teamA[k]}</span>
-                        ))}
+            {/* Stats Section */}
+            <div className={styles.statsSection}>
+                <div className={styles.sectionHeader}>
+                    <div className={styles.accentBlock}></div>
+                    <h2>Statystyki Graczy</h2>
+                    <div className={styles.decorativeLine}></div>
+                </div>
+                <div className={styles.splitTableContainer}>
+                    <div className={styles.teamColumn}>
+                        <div className={styles.teamColumnHeader}>
+                            <span>{teamAName}</span>
+                            <span style={{ fontSize: '0.9rem', fontWeight: 'normal', color: 'var(--text-muted)' }}>
+                                {getSideWinsText(sideWins?.[0])}
+                            </span>
+                        </div>
+                        {renderStatsTable(teamAStats)}
                     </div>
-                </div>
-
-                <div className={styles.scoreContainer}>
-                    <span className={clsx(styles.score, teamA.finalScore > teamB.finalScore ? styles.winColor : '')}>
-                        {teamA.finalScore}
-                    </span>
-                    <span className={styles.scoreDivider}>:</span>
-                    <span className={clsx(styles.score, teamB.finalScore > teamA.finalScore ? styles.winColor : '')}>
-                        {teamB.finalScore}
-                    </span>
-                </div>
-
-                <div className={styles.team}>
-                    <div className={styles.teamName}>Team B</div>
-                    <div className={styles.players}>
-                        {Object.keys(teamB).filter(k => k.startsWith('player')).map(k => (
-                            <span key={k}>{teamB[k]}</span>
-                        ))}
+                    <div className={styles.teamColumn}>
+                        <div className={styles.teamColumnHeader}>
+                            <span>{teamBName}</span>
+                            <span style={{ fontSize: '0.9rem', fontWeight: 'normal', color: 'var(--text-muted)' }}>
+                                {getSideWinsText(sideWins?.[1])}
+                            </span>
+                        </div>
+                        {renderStatsTable(teamBStats)}
                     </div>
                 </div>
             </div>
 
-            <div className={styles.statsSection}>
-                <h2>Statystyki Graczy</h2>
-                <div className={styles.filterRow}>
-                    <div className={styles.tabs}>
-                        <button
-                            className={clsx(styles.tab, activeTab === 'rating' && styles.active)}
-                            onClick={() => setActiveTab('rating')}
-                        >
-                            Rating
-                        </button>
-                        <button
-                            className={clsx(styles.tab, activeTab === 'adr' && styles.active)}
-                            onClick={() => setActiveTab('adr')}
-                        >
-                            ADR
-                        </button>
-                        <button
-                            className={clsx(styles.tab, activeTab === 'kast' && styles.active)}
-                            onClick={() => setActiveTab('kast')}
-                        >
-                            KAST
-                        </button>
-                    </div>
-
-                    <div className={styles.sideTabs}>
-                        <button
-                            className={clsx(styles.sideTab, selectedSide === 'ALL' && styles.active)}
-                            onClick={() => setSelectedSide('ALL')}
-                        >
-                            ALL
-                        </button>
-                        <button
-                            className={clsx(styles.sideTab, selectedSide === 'CT' && styles.active)}
-                            onClick={() => setSelectedSide('CT')}
-                        >
-                            CT
-                        </button>
-                        <button
-                            className={clsx(styles.sideTab, selectedSide === 'T' && styles.active)}
-                            onClick={() => setSelectedSide('T')}
-                        >
-                            T
-                        </button>
-                    </div>
+            {/* Key Stats Section (Trivia) */}
+            <div className={styles.keyStatsSection}>
+                <div className={styles.sectionHeader}>
+                    <div className={styles.accentBlock}></div>
+                    <h2>Najlepsze Wyniki Meczu</h2>
+                    <div className={styles.decorativeLine}></div>
                 </div>
-
-                <div className={styles.tableContainer}>
-                    {renderStatsTable()}
+                <div className={styles.statsGrid}>
+                    <StatCard
+                        label="Top Fragger"
+                        stat={getBestStat(playerStats, 'kills')}
+                        valueLabel="Kills"
+                    />
+                    <StatCard
+                        label="Najlepszy K/D"
+                        stat={getBestStat(playerStats, 'kdRatio', (p) => p.kills / (p.deaths || 1))}
+                        valueFormatter={(v) => v.toFixed(2)}
+                    />
+                    <StatCard
+                        label="Najwyższy Rating"
+                        stat={getBestStat(playerStats, 'rating')}
+                        valueFormatter={(v) => v.toFixed(2)}
+                    />
+                    <StatCard
+                        label="Największy ADR"
+                        stat={getBestStat(playerStats, 'adr')}
+                        valueFormatter={(v) => v.toFixed(1)}
+                    />
+                    <StatCard
+                        label="Entry Fragger"
+                        stat={getBestStat(playerStats, 'entryKills')}
+                        valueLabel="Entries"
+                    />
+                    <StatCard
+                        label="Clutch Minister"
+                        stat={getBestStat(playerStats, 'clutchesWon')}
+                        valueLabel="Clutches"
+                    />
+                    <StatCard
+                        label="Support (Trades)"
+                        stat={getBestStat(playerStats, 'totalTrades')}
+                        valueLabel="Trades"
+                    />
                 </div>
             </div>
         </div>
     );
+};
+
+// Helper Components
+const StatCard = ({ label, stat, valueLabel, valueFormatter }) => {
+    if (!stat) return null;
+    const { player, value } = stat;
+
+    // If value is 0, maybe don't show or show differently? For now show all.
+    // Actually for things like clutches, if max is 0, maybe skip?
+    if (value === 0 && label !== 'K/D' && label !== 'Rating') return null;
+
+    return (
+        <div className={styles.statCard}>
+            <div className={styles.statLabel}>{label}</div>
+            <div className={styles.statPlayer}>{player.playerName}</div>
+            <div className={styles.statValue}>
+                {valueFormatter ? valueFormatter(value) : value}
+                {valueLabel && <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 'normal', marginLeft: '4px' }}>{valueLabel}</span>}
+            </div>
+        </div>
+    );
+};
+
+// Helper logic
+const getBestStat = (stats, key, customGetter) => {
+    if (!stats || stats.length === 0) return null;
+
+    let bestPlayer = null;
+    let bestValue = -Infinity;
+
+    stats.forEach(player => {
+        const value = customGetter ? customGetter(player) : player[key];
+        if (value > bestValue) {
+            bestValue = value;
+            bestPlayer = player;
+        }
+    });
+
+    return { player: bestPlayer, value: bestValue };
 };
 
 export default DemoDetails;
