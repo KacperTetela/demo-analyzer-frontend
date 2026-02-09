@@ -9,7 +9,7 @@ const Home = () => {
             <section className={styles.hero}>
                 <h1 className={styles.title}>Dem Analyzer</h1>
                 <p className={styles.subtitle}>
-                    Deep insights into your CS2 matches. Advanced analytics, detailed stats, and performance tracking.
+                    Zaawansowana analiza Twoich meczów w CS2, szczegółowe statystyki oraz śledzenie historii gier.
                 </p>
                 <div className={styles.ctaContainer}>
                     <Link to="/login" className={`${styles.ctaButton} ${styles.primaryBtn}`}>
